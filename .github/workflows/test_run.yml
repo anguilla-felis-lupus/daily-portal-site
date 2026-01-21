@@ -1,0 +1,31 @@
+name: Test AI Connection
+
+# 手動でボタンを押したときだけ実行する設定
+on:
+  workflow_dispatch:
+
+jobs:
+  test-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. コードを持ってくる
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Pythonの準備
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. 必要な道具（ライブラリ）をインストール
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # 4. AIテストプログラムを実行
+      - name: Run AI Test
+        env:
+          # ここでSecretsの鍵をプログラムに渡します
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/test_ai.py
