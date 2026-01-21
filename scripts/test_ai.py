@@ -11,15 +11,15 @@ if not api_key:
 # 2. AIの設定
 genai.configure(api_key=api_key)
 
-print("利用可能なモデルの一覧を取得します...\n")
+# print("利用可能なモデルの一覧を取得します...\n")
 
-# 利用可能なモデルをリストアップ
-for model in genai.list_models():
-    # 'generateContent'（文章生成）が可能なモデルのみを表示する
-    if 'generateContent' in model.supported_generation_methods:
-        print(model.name)
+# # 利用可能なモデルをリストアップ
+# for model in genai.list_models():
+#     # 'generateContent'（文章生成）が可能なモデルのみを表示する
+#     if 'generateContent' in model.supported_generation_methods:
+#         print(model.name)
 
-model = genai.GenerativeModel('models/gemini-pro-latest')
+model = genai.GenerativeModel('models/gemini-2.0-flash')
 
 # 3. AIに挨拶をお願いする
 try:
