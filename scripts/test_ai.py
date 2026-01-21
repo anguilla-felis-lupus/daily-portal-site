@@ -10,7 +10,7 @@ if not api_key:
 
 # 2. AIの設定
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('models/gemini-pro-latest')
 
 # 3. AIに挨拶をお願いする
 try:
