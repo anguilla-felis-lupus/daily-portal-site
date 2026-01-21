@@ -19,7 +19,7 @@ genai.configure(api_key=api_key)
 #     if 'generateContent' in model.supported_generation_methods:
 #         print(model.name)
 
-model = genai.GenerativeModel('models/gemini-2.0-flash')
+model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 # 3. AIに挨拶をお願いする
 try:
