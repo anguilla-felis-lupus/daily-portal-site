@@ -2,11 +2,24 @@
 
 {% block content %}
 <div class="card border-warning">
-    <div class="card-header bg-warning text-dark">
-        🦁 今日のどうぶつ豆知識
+    <div class="card-header bg-warning text-dark fw-bold">
+        🦁 今日のどうぶつ豆知識：{{ title }}
     </div>
+    
+    {% if image %}
+    <img src="{{ image }}" class="card-img-top" alt="{{ theme }}" style="max-height: 400px; object-fit: cover;">
+    {% endif %}
+    
     <div class="card-body">
-        <p class="card-text">{{ content | replace('\n', '<br>') | safe }}</p>
+        <p class="card-text lead" style="line-height: 1.8;">
+            {{ text | replace('\n', '<br>') | safe }}
+        </p>
+        
+        {% if image %}
+        <p class="text-muted text-end mt-3 small">Image by Pixabay</p>
+        {% else %}
+        <p class="text-muted mt-3 small">※今日は画像が見つかりませんでした。</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
