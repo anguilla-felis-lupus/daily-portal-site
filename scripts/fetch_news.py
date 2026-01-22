@@ -2,8 +2,10 @@ import feedparser
 import google.generativeai as genai
 import os
 import json
+import requests # 追加: データを確実に取るために使用
 
-RSS_URL = "[https://news.google.com/rss/search?q=AI+Artificial+Intelligence+when:1d&hl=ja&gl=JP&ceid=JP:ja](https://news.google.com/rss/search?q=AI+Artificial+Intelligence+when:1d&hl=ja&gl=JP&ceid=JP:ja)"
+# 検索クエリ（少し緩めて確実に記事がヒットするように変更）
+RSS_URL = "https://news.google.com/rss/search?q=AI+Artificial+Intelligence&hl=ja&gl=JP&ceid=JP:ja"
 MAX_ARTICLES = 5
 
 def generate_news():
@@ -11,7 +13,6 @@ def generate_news():
     if not api_key:
         return {"column": "APIキーエラー", "articles": []}
 
-    # AI設定
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(
         'gemini-1.5-flash',
@@ -19,15 +20,28 @@ def generate_news():
     )
 
     print("📰 Googleニュースから記事を取得中...")
-    feed = feedparser.parse(RSS_URL)
     
+    # --- 修正ポイント: ブラウザのふりをしてアクセスする ---
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    
+    try:
+        # requestsを使ってデータを取得してから解析する
+        response = requests.get(RSS_URL, headers=headers, timeout=10)
+        feed = feedparser.parse(response.content)
+    except Exception as e:
+        return {"column": f"RSS取得エラー: {e}", "articles": []}
+    # ------------------------------------------------
+
     if not feed.entries:
-        return {"column": "記事が見つかりませんでした。", "articles": []}
+        # それでも取れない場合のデバッグ用
+        print("RSSのエントリーが空でした。")
+        return {"column": "記事が見つかりませんでした（Google Newsへのアクセスがブロックされた可能性があります）。", "articles": []}
 
     # 変数名を 'articles' に統一
     articles = feed.entries[:MAX_ARTICLES]
     
-    # プロンプト作成
     prompt = "以下のニュース記事リストを読み、Webサイト掲載用のデータをJSON形式で作成してください。\n"
     prompt += "【要件】\n"
     prompt += "1. `items`: 各記事について『catch_copy(30文字以内の見出し)』と『summary(100文字程度の要約)』を作成。\n"
@@ -38,25 +52,20 @@ def generate_news():
         prompt += f"ID:{i} タイトル:{entry.title}\n"
 
     try:
-        # AIに生成させる
         response = model.generate_content(prompt)
         text = response.text
 
-        # エラー回避：Markdown記法が含まれている場合に取り除く処理
         if "```json" in text:
             text = text.replace("```json", "").replace("```", "")
         elif "```" in text:
             text = text.replace("```", "")
         
-        # JSONテキストをPythonの辞書データに変換
         ai_data = json.loads(text)
         
-        # 結果を結合
         final_articles = []
         ai_items = ai_data.get("items", [])
         
         for i, entry in enumerate(articles):
-            # AIのデータがあるか確認して結合
             ai_item = ai_items[i] if i < len(ai_items) else {"catch_copy": entry.title, "summary": "要約生成失敗"}
             
             final_articles.append({
@@ -74,7 +83,6 @@ def generate_news():
 
     except Exception as e:
         print(f"エラー発生: {e}")
-        # エラー時も最低限の情報を返す
         return {"column": f"エラーが発生しました: {e}", "articles": []}
 
 if __name__ == "__main__":
