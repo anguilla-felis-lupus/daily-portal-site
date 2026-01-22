@@ -14,7 +14,7 @@ def generate_animal_column():
     model = genai.GenerativeModel('gemini-2.5-flash')
 
     # ランダム性を出すために、テーマをいくつか用意
-    themes = ["珍しい深海生物", "意外と知らない犬の行動", "最強の昆虫", "絶滅危惧種の豆知識", "動物園の人気者"]
+    themes = ["珍しい深海生物", "意外と知らない犬の行動", "最強の昆虫", "絶滅危惧種の豆知識", "動物園の人気者", "水族館の人気者","意外と知らない猫の行動", "絶滅動物の生態", "危険生物の生態", "身近にいる生き物たちの生態"]
     theme = random.choice(themes)
 
     prompt = f"""
@@ -28,11 +28,9 @@ def generate_animal_column():
 
     try:
         response = model.generate_content(prompt)
-        print("\n=== 🐾 今日の動物コラム ===\n")
-        print(response.text)
-        print("\n========================")
+        return response.text
     except Exception as e:
-        print(f"AI生成エラー: {e}")
+        return f"AI生成エラー: {e}"
 
 if __name__ == "__main__":
-    generate_animal_column()
+    print(generate_animal_column())
