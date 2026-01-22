@@ -38,21 +38,22 @@ def main():
     # -----------------------
 
     # --- [TOP / AIニュース] ---
+
+    print("📰 ニュースデータ取得中...")
     try:
-        # fetch_newsを少し改造して、(articles, summary_text) を返すようにするのが理想ですが
-        # 今は動かすことを優先して、ダミーデータまたはスクリプト内の関数を呼びます。
-        # ここでは fetch_news.py の中身を直接呼ぶのではなく、
-        # 簡易的にニュース取得ロジックをここで実行する、または
-        # fetch_news.py を「データを返す」ように修正するのがベストです。
+        news_result = fetch_news.generate_news()
         
-        # ★今回は最も簡単な「各スクリプトを実行して、結果をHTMLに埋め込む」形にします。
-        # 本来は main.py から各関数を呼び出してデータを受け取ります。
-        
-        # 簡易実装: ニュース取得
-        print("📰 ニュースデータ取得中...")
-        news_data = fetch_news.generate_news() # ※あとでfetch_news.pyにreturnを追加します
-    except:
-        news_data = "ニュースの取得に失敗しました"
+        if isinstance(news_result, dict):
+            # AIが書いたコラム
+            news_column = news_result.get('column', '')
+            # 要約・リンク付きの記事リスト
+            news_articles = news_result.get('articles', [])
+        else:
+            news_column = "データの取得に失敗しました"
+            news_articles = []
+    except Exception as e:
+        news_column = f"取得エラー: {e}"
+        news_articles = []
 
     # --- [Market / 株価] ---
     print("📈 株価データ取得中...")
@@ -79,7 +80,8 @@ def main():
     html = template.render(
         title="AI News",
         active_tab="index",
-        content=news_data, 
+        column=news_column,         # コラム本文
+        article_list=news_articles, # 記事リスト
         **common_context
     )
     with open(f'{OUTPUT_DIR}/index.html', 'w', encoding='utf-8') as f:
