@@ -2,12 +2,11 @@ name: Daily Website Update
 
 on:
   schedule:
-    # 毎日 日本時間 朝7時 (UTC 22:00) に実行
-    - cron: '0 22 * * *'
-  workflow_dispatch: # 手動実行ボタン
+    - cron: '0 22 * * *' # 日本時間 朝7時
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write # リポジトリへの書き込み権限を与える
 
 jobs:
   build-and-deploy:
@@ -28,16 +27,36 @@ jobs:
       - name: サイト生成プログラムを実行
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          HOTPEPPER_API_KEY: ${{ secrets.HOTPEPPER_API_KEY }} # まだ未設定でもエラーにならないようコード側で制御済
+          HOTPEPPER_API_KEY: ${{ secrets.HOTPEPPER_API_KEY }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: python scripts/main.py
 
+      # --- ★ここが追加ポイント: 生成されたアーカイブをリポジトリに保存する ---
+      - name: 生成されたファイルをGitに保存
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # archivesフォルダ（過去ログ）と、ルートの最新htmlをステージング
+          git add archives/
+          git add *.html
+          
+          # 変更がある場合のみコミット＆プッシュ
+          if git diff --staged --quiet; then
+            echo "変更がありませんでした"
+          else
+            git commit -m "Update Daily Content: $(date +'%Y-%m-%d')"
+            git push
+          fi
+
+      # -------------------------------------------------------------------
+
       - name: 公開用フォルダの準備
-        # 生成されたHTMLファイルだけを public というフォルダに集めます
         run: |
           mkdir public
-          mv *.html public/
-          # cssなどの静的ファイルがあればここに追加
+          # htmlファイルとarchivesフォルダを公開用フォルダに移動/コピー
+          cp *.html public/
+          cp -r archives public/
 
       - name: GitHub Pagesへデプロイ
         uses: peaceiris/actions-gh-pages@v3
