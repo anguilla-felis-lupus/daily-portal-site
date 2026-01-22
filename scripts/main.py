@@ -72,7 +72,7 @@ def main():
     pages = [
         ("index.html", "AI News", "index", {"column": news_column, "article_list": news_articles}),
         ("market.html", "Market", "market", {"content": market_text}),
-        ("animal.html", "Animal", "animal", {"content": animal_text}),
+        ("animal.html", "Animal", "animal", animal_data),
         ("entertainment.html", "Entertainment", "entertainment", {"manga_list": ent_data['manga'], "anime_list": ent_data['anime']})
     ]
 
