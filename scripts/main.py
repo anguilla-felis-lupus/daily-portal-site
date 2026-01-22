@@ -51,8 +51,10 @@ def main():
     print("📈 株価データ取得中...")
     market_text = fetch_market.generate_market_report()
 
+    # --- [Animal / 動物] ---
     print("🦁 動物コラム生成中...")
-    animal_text = fetch_animal.generate_animal_column()
+    # 辞書データ {"title":..., "text":..., "image":...} を受け取る
+    animal_data = fetch_animal.generate_animal_column()
     
     print("📚 エンタメデータ取得中...")
     ent_data = fetch_entertainment.get_entertainment_info()
