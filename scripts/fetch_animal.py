@@ -49,7 +49,7 @@ def generate_animal_column():
         generation_config={"response_mime_type": "application/json"}
     )
 
-    themes = ["深海生物", "犬の不思議な行動", "最強の昆虫", "絶滅危惧種", "動物園の人気者", "サバンナの生き物", "絶滅動物", "危険生物", "猫の気持ち", "身近な生き物の生態"]
+    themes = ["深海生物", "犬の不思議な行動", "最強の昆虫", "絶滅危惧種", "動物園の人気者", "水族館の人気者", "サバンナの生き物", "絶滅動物", "危険生物", "猫の気持ち", "身近な生き物の生態"]
     theme_category = random.choice(themes)
 
     # プロンプトを修正し、JSON形式で「テーマ（生き物名）」と「本文」を分けさせる
