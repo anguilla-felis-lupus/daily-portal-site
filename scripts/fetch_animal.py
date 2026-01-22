@@ -87,7 +87,7 @@ def generate_animal_column():
 
         # 本文、画像URL、タイトルをまとめて返す
         return {
-            "title": title,
+            "headline": title,
             "text": body_text,
             "image": image_url,
             "theme": animal_name
@@ -95,10 +95,10 @@ def generate_animal_column():
         
     except Exception as e:
         print(f"AI生成エラー: {e}")
-        return {"title": "エラー", "text": f"生成中にエラーが発生しました: {e}", "image": None, "theme": "エラー"}
+        return {"headline": "エラー", "text": f"生成中にエラーが発生しました: {e}", "image": None, "theme": "エラー"}
 
 if __name__ == "__main__":
     result = generate_animal_column()
-    print(f"タイトル: {result['title']}")
+    print(f"タイトル: {result['headline']}")
     print(f"画像URL: {result['image']}")
     print(f"本文: {result['text'][:50]}...")
