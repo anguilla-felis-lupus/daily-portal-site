@@ -1,6 +1,7 @@
 import feedparser
 import google.generativeai as genai
 import os
+import json
 
 # --- 設定 ---
 # 検索したいキーワード（ここを変えれば別のニュースになります）
@@ -11,43 +12,72 @@ MAX_ARTICLES = 5
 def generate_news():
     # 1. APIキーの準備
     api_key = os.environ.get("GEMINI_API_KEY")
+    # エラー時は辞書形式でエラーメッセージを返す
     if not api_key:
-        print("APIキーが設定されていません")
-        return
+        return {"summary": "APIキーが設定されていません。", "articles": []}
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    # JSON形式で
+    model = genai.GenerativeModel(
+        'gemini-1.5-flash',
+        generation_config={"response_mime_type": "application/json"}
+    )
 
     # 2. RSSからニュースを取得
     print("📰 Googleニュースから記事を取得中...")
     feed = feedparser.parse(RSS_URL)
     
     if not feed.entries:
-        print("記事が見つかりませんでした。")
-        return
+        return {"column": "記事が見つかりませんでした。", "articles": []}
 
     # 3. 記事データを整形
-    articles = feed.entries[:MAX_ARTICLES]
-    news_text = ""
+    raw_articles = feed.entries[:MAX_ARTICLES]
     
     print(f"✅ {len(articles)}件の記事を取得しました。AIに要約を依頼します...")
 
-    # AIへの指示（プロンプト）を作る
-    prompt = "以下のニュース記事リストを元に、Webサイトに掲載するための記事を作成してください。\n"
-    prompt += "各記事について『キャッチーな見出し（30文字以内）』と『簡潔な要約（100文字以内）』を作成してください。\n"
-    prompt += "出力はHTMLタグ（<h3>や<p>など）を使わず、読みやすいテキスト形式でお願いします。\n\n"
-    
-    for i, entry in enumerate(articles):
-        title = entry.title
-        link = entry.link
-        prompt += f"記事{i+1} タイトル: {title}\nURL: {link}\n---\n"
+    # プロンプト作成
+    prompt = "以下のニュース記事リストを読み、Webサイト掲載用のデータをJSON形式で作成してください。\n"
+    prompt += "【要件】\n"
+    prompt += "1. `items`: 各記事について『catch_copy(30文字以内の見出し)』と『summary(100文字程度の要約)』を作成。\n"
+    prompt += "2. `column`: 記事全体から読み取れる『今日のAI業界の動き』を300文字程度のコラムとして作成。\n\n"
+    prompt += "【記事リスト】\n"
 
-    # 4. AIに生成させる
+    for i, entry in enumerate(raw_articles):
+        prompt += f"ID:{i} タイトル:{entry.title}\n"
+
     try:
+        # AIに生成させる
         response = model.generate_content(prompt)
-        return response.text  # ★ここを変更（printではなくreturn）
+        
+        # JSONテキストをPythonの辞書データに変換
+        ai_data = json.loads(response.text)
+        
+        # RSSの元データ(URLなど)と、AIの生成データ(要約)を合体させる
+        final_articles = []
+        ai_items = ai_data.get("items", [])
+        
+        for i, entry in enumerate(raw_articles):
+            # AIの生成データがあればそれを使う、なければ空文字
+            ai_item = ai_items[i] if i < len(ai_items) else {"catch_copy": entry.title, "summary": "要約生成失敗"}
+            
+            final_articles.append({
+                "title": entry.title,
+                "url": entry.link,
+                "date": entry.published if 'published' in entry else "",
+                "headline": ai_item.get("catch_copy", entry.title), # AI見出し
+                "summary": ai_item.get("summary", "")               # AI要約
+            })
+
+        return {
+            "column": ai_data.get("column", "コラム生成失敗"),
+            "articles": final_articles
+        }
+
     except Exception as e:
-        return f"AI生成エラー: {e}"
+        print(f"エラー発生: {e}")
+        return {"column": f"エラー: {e}", "articles": []}
 
 if __name__ == "__main__":
-    print(generate_news())
+    result = generate_news()
+    print(f"コラム: {result['column'][:50]}...")
+    print(f"記事数: {len(result['articles'])}")
