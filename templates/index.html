@@ -1,12 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header bg-primary text-white">
-        📡 今日のAIニュースまとめ
+
+<h3 class="mb-3">📰 今日のピックアップニュース</h3>
+<div class="row">
+    {% for article in article_list %}
+    <div class="col-md-12 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title text-primary fw-bold">{{ article.headline }}</h5>
+                
+                <p class="card-text mt-2">{{ article.summary }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a href="{{ article.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        記事を読む 🔗
+                    </a>
+                    <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
+                        Source: {{ article.title }}
+                    </small>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <p class="card-text">{{ content | replace('\n', '<br>') | safe }}</p>
+    {% else %}
+    <p>記事が取得できませんでした。</p>
+    {% endfor %}
+</div>
+
+<div class="card mt-5 border-info">
+    <div class="card-header bg-info text-white fw-bold">
+        🦁 今日のAI業界の動き（編集後記）
+    </div>
+    <div class="card-body bg-light">
+        <p class="card-text" style="line-height: 1.8;">
+            {{ column | replace('\n', '<br>') | safe }}
+        </p>
     </div>
 </div>
+
 {% endblock %}
