@@ -52,11 +52,10 @@ def generate_market_report():
     
     try:
         response = model.generate_content(prompt)
-        print("\n=== 📈 今日の市況 ===\n")
-        print(response.text)
-        print("\n=====================")
+        # データとコメントをセットで返す
+        return f"【市況データ】\n{market_data}\n\n【AIコメント】\n{response.text}"
     except Exception as e:
-        print(f"AI生成エラー: {e}")
+        return f"AI生成エラー: {e}"
 
 if __name__ == "__main__":
-    generate_market_report()
+    print(generate_market_report())
