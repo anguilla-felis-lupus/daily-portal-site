@@ -10,6 +10,7 @@
         .card { margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 0.9em; }
         .nav-tabs .nav-link.active { font-weight: bold; border-top: 3px solid #0d6efd; }
+        .archive-list { max-height: 500px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -19,23 +20,49 @@
             <p class="text-muted">最終更新: {{ update_time }}</p>
         </header>
 
-        <ul class="nav nav-tabs mb-4">
-            <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" href="index.html">🏠 AIニュース</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'market' %}active{% endif %}" href="market.html">📈 株価・経済</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'animal' %}active{% endif %}" href="animal.html">🦁 動物コラム</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active_tab == 'entertainment' %}active{% endif %}" href="entertainment.html">📚 エンタメ</a>
-            </li>
-        </ul>
+        <div class="row">
+            <div class="col-md-9">
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'index' %}active{% endif %}" href="index.html">🏠 AIニュース</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'market' %}active{% endif %}" href="market.html">📈 株価・経済</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'animal' %}active{% endif %}" href="animal.html">🦁 動物コラム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'entertainment' %}active{% endif %}" href="entertainment.html">📚 エンタメ</a>
+                    </li>
+                </ul>
 
-        <div class="content">
-            {% block content %}{% endblock %}
+                <div class="content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        📅 過去の記事
+                    </div>
+                    <div class="list-group list-group-flush archive-list">
+                        {% if is_archive %}
+                        <a href="../../index.html" class="list-group-item list-group-item-action fw-bold text-primary">
+                            🔙 最新の記事へ戻る
+                        </a>
+                        {% endif %}
+
+                        {% for date in archive_list %}
+                        <a href="{% if is_archive %}../{{ date }}/index.html{% else %}archives/{{ date }}/index.html{% endif %}" 
+                           class="list-group-item list-group-item-action">
+                            {{ date }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <footer class="footer">
