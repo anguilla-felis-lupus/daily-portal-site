@@ -6,18 +6,41 @@
     <title>AI News - Daily Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; padding-top: 20px; }
-        .card { margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        body { background-color: #f8f9fa; padding-top: 20px; transition: background-color 0.3s, color 0.3s; }
+        .card { margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s, border-color 0.3s; }
         .footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 0.9em; }
         .nav-tabs .nav-link.active { font-weight: bold; border-top: 3px solid #0d6efd; }
         .archive-list { max-height: 500px; overflow-y: auto; }
+
+        /* --- ダークモード用の追加スタイル --- */
+        [data-bs-theme="dark"] body { background-color: #212529; }
+        [data-bs-theme="dark"] .footer { color: #adb5bd; }
+        [data-bs-theme="dark"] .card { box-shadow: 0 4px 6px rgba(255,255,255,0.05); }
+        
+        /* 切り替えボタンのデザイン */
+        .theme-toggle {
+            position: fixed; /* スクロールしても右上に固定 */
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        /* スマホ画面ではレイアウトが崩れないように少し位置調整 */
+        @media (max-width: 768px) {
+            .theme-toggle { top: 10px; right: 10px; }
+        }
     </style>
 </head>
 <body>
+    <div class="theme-toggle">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="bd-theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span>
+        </button>
+    </div>
+
     <div class="container">
         <header class="mb-4 text-center">
             <h1>Daily AI Portal 🤖</h1>
-            <p class="text-muted">最終更新: 2026-01-26 17:56</p>
+            <p class="text-muted">最終更新: 2026-01-26 18:05</p>
         </header>
 
         <div class="row">
@@ -49,47 +72,9 @@
     <div class="col-md-12 mb-3">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">京都大発「Lawfree」AI契約書公開</h5>
+                <h5 class="card-title text-primary fw-bold">AI活用の鍵はメタデータとガバナンス</h5>
                 
-                <p class="card-text mt-2">京都大学発スタートアップ「法とAI研究所」が、AIを活用した契約書チェックサービス「Lawfree」を公開しました。法務業務の効率化と品質向上を目指し、リーガルテック市場に新たな選択肢を提供。AIが契約書の不備やリスクを指摘し、業務負担を軽減することが期待されます。</p>
-                
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE9pQ3E4Nld4UVdNNTBUU21ObmttMi0zZEx4X05nX0JxR0ZBNW1zM00zZjk5TnlsUk01NmhsUGFqS3ctanNQdXltTktIc3F0OUhsdW5tQ19yWQ?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
-                        記事を読む 🔗
-                    </a>
-                    <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
-                        Source: 本学発のスタートアップである「法とAI研究所」がAI契約書チェックサービス「Lawfree」を公開しました - kyoto-u.ac.jp
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-12 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">慶應がAI時代の報道機関へ提言</h5>
-                
-                <p class="card-text mt-2">慶應義塾大学X Dignityセンターは、「AI時代の報道機関のあり方に関する提言」を公表しました。AIがもたらす影響を考慮し、人間の尊厳が維持される民主主義社会の実現に向け、報道機関が果たすべき役割と倫理的な課題について具体的な方向性を示しています。</p>
-                
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTFBFdEZ0ZnJ3Y0tYbkNCN1BVbFhCTjdxOVp5ZEgtUGdLM1c3RmI2dmhqRWd6MldVMjF2cmgwU0UwenltMlE3a3JYbU5nZ0dUS2VEa3AzVXRNMjl3cjNlei1FbmFraGVBX19jYkJrWlhn?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
-                        記事を読む 🔗
-                    </a>
-                    <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
-                        Source: 慶應義塾大学X Dignityセンターが「AI時代の報道機関のあり方に関する提言」を公表－人間の尊厳が維持される民主主義社会の実現に向けて－：[慶應義塾] - Keio University
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-12 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">AI活用企業の条件：メタとガバナンス</h5>
-                
-                <p class="card-text mt-2">三菱UFJリサーチ&コンサルティングが、AIを最大限に活用できる「AI-Readyな企業」の条件を解説。効果的なAI導入には、高品質なメタデータ管理と適切なガバナンス体制が不可欠であることを強調しています。データ戦略がAI成功の鍵を握ると示唆。</p>
+                <p class="card-text mt-2">企業がAIを効果的に導入・活用するための条件として、適切なメタデータ管理と強固なガバナンス体制の重要性を解説。データ整備と運用指針が成功の鍵を握る。</p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9TeVlaNEt4YlBHUTlQblJWYmlWMGVmVHV0TVZ3NFYtTnNUQjliYXB6VG5qUjA3akxxQ2Nld2tESUpOblhoMlVqSWlIaGZWMWFOaDlFTjBJNFg2dw?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
@@ -106,9 +91,9 @@
     <div class="col-md-12 mb-3">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">AI・ロボット共生社会学シンポ開催</h5>
+                <h5 class="card-title text-primary fw-bold">AI・ロボット共生社会学シンポジウム</h5>
                 
-                <p class="card-text mt-2">埼玉大学が第2回公開シンポジウム「AI・ロボット共生社会学に向けて」を開催します。AIとロボットが共存する未来社会のあり方、倫理、社会影響について多角的に議論し、学際的な視点からその課題と展望を探求する予定です。</p>
+                <p class="card-text mt-2">埼玉大学が2月7日(土)に第2回公開シンポジウムを開催。AIとロボットが共存する社会のあり方について、多角的な視点から議論を深めることを目的としている。</p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <a href="https://news.google.com/rss/articles/CBMib0FVX3lxTE1oeThQc1luMUxfZ1AwX1ZHdnNaMERYOHBXZWhGbEkwQTc5WHAyeV9TRXF2U1pEOVFkdzFGNk9EajVvX2d0LWhfSFhrUktHVFVGRnBpdnVlMzM3RTU3ZldoTUlfRERKODFxOS1YOEE4QQ?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
@@ -125,9 +110,28 @@
     <div class="col-md-12 mb-3">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">2040年AI人材339万人不足を推計</h5>
+                <h5 class="card-title text-primary fw-bold">国際図書館連盟がAI諮問グループ設立</h5>
                 
-                <p class="card-text mt-2">日本において、2040年にはAI人材が339万人も不足するとの推計が発表されました。これは、AI技術の急速な発展と社会実装が進む中で、専門知識を持つ人材の育成が追いつかない現状を示しており、早急な対策が求められています。</p>
+                <p class="card-text mt-2">国際図書館連盟（IFLA）は、図書館分野におけるAIの活用と課題に対応するため、MLAS AIアドバイザリーグループの設立を発表。専門的な知見を結集し、図書館の未来を検討する。</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTE1DdVRsRzRFWE9fbTY0S3J0dHRpbWNQMkQzWGJkcHBLc2JJUUF2Y3ZCS25INUxZLWcwblo3NjJCbFZTWktscklQSkk2bGI?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
+                        記事を読む 🔗
+                    </a>
+                    <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
+                        Source: 国際図書館連盟（IFLA）図書館協会運営分科会、IFLA MLAS AIアドバイザリーグループの設立を発表 - カレントアウェアネス・ポータル
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-12 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title text-primary fw-bold">2040年にAI人材339万人不足へ</h5>
+                
+                <p class="card-text mt-2">2040年にはAI関連分野で339万人もの人材が不足するとの推計が発表された。急速な技術進化に対し、教育体制や育成環境の整備が喫緊の課題となっている。</p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE9oc00wUGlqaVU0RVJhSkRYWHdmY0RBLXp3UHlTQXFsYzBMNXdnc0l4TVpEU0s4RE9qLTBYMzRGX2NSSGQ3cGRhV1kyZ1NwRDdF?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
@@ -135,6 +139,25 @@
                     </a>
                     <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
                         Source: AI人材が40年に339万人不足 推計 - Yahoo!ニュース
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-12 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title text-primary fw-bold">生成AI知財保護、新聞協会が意見</h5>
+                
+                <p class="card-text mt-2">生成AIにおける知的財産保護ルールの実効性向上を求め、新聞協会が政府に意見書を提出。AIによるコンテンツ生成と著作権保護のバランスが重要な論点となっている。</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE1IS3RHZ2EtRjlCbFJVZlZJNG1VVHdjVkhkWmtsUDlleE80Yy1JbmFKOHpFYjdkWi00YUxYS1R4T2tyUnY4T1VnYndQUmd5c1VNbnJPaDc1aGt5NTVsVFk1bVIyOWp3UHNjMXhkWQ?oc=5" target="_blank" class="btn btn-sm btn-outline-primary">
+                        記事を読む 🔗
+                    </a>
+                    <small class="text-muted text-end" style="font-size: 0.8em; max-width: 60%;">
+                        Source: 生成AIの知財保護ルール案、実効性向上を 新聞協会が政府に意見書 - 日本経済新聞
                     </small>
                 </div>
             </div>
@@ -149,7 +172,7 @@
     </div>
     <div class="card-body bg-light">
         <p class="card-text" style="line-height: 1.8;">
-            今日のAI・テック業界は、実用化と社会課題への対応が両輪で進む。京都大発「Lawfree」がAI契約書チェックサービスを公開し、法務分野でのAI活用が加速。同時に、慶應義塾大学はAI時代の報道倫理を提言、埼玉大学はAI・ロボット共生社会学シンポを開催し、AIと人間の尊厳・社会システムとの調和が議論の中心だ。企業も、三菱UFJがAI-Readyな条件としてメタデータとガバナンスを強調するように、AIを活かす組織体制構築が急務。さらに、2040年にはAI人材が339万人不足との推計もあり、技術進化と人材育成・社会受容性の確立が喫緊の課題となっている。
+            今日のAI・テック業界は、急速な技術進化とそれに伴う社会的な対応に焦点が集まっています。企業はAI導入においてメタデータ管理とガバナンスの重要性を認識し、「AI-Ready」な体制作りを進めています。社会全体では、AIやロボットとの共生をテーマにしたシンポジウムが開催され、国際的な図書館連盟がAIアドバイザリーグループを設立するなど、多角的な視点からその未来が議論されています。一方で、2040年にはAI人材が339万人も不足するとの推計が発表され、人材育成の喫緊の課題が浮き彫りに。さらに、生成AIの台頭に伴う知的財産保護の実効性向上を求める声も上がり、技術と法制度のバランスが問われています。これら全体から、AIの社会実装とそれに伴う課題解決に向けた動きが活発化していることが見て取れます。
         </p>
     </div>
 </div>
@@ -196,5 +219,45 @@
             <p>&copy; 2024 Daily AI Portal. Generated by Gemini & GitHub Actions.</p>
         </footer>
     </div>
+
+    <script>
+        // ① 設定を保存・取得する関数
+        const getStoredTheme = () => localStorage.getItem('theme');
+        const setStoredTheme = theme => localStorage.setItem('theme', theme);
+
+        // ② どのモードにするか決める関数 (保存された設定 > システム設定 > ライト)
+        const getPreferredTheme = () => {
+            const storedTheme = getStoredTheme();
+            if (storedTheme) {
+                return storedTheme;
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+
+        // ③ テーマを適用する関数
+        const setTheme = theme => {
+            // HTMLタグに data-bs-theme="dark" をつけるとBootstrapが自動で黒くしてくれる
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            
+            // アイコンの切り替え
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'dark') {
+                icon.textContent = '☀️'; // ダークモード中は「晴れ(ライトへ)」を表示
+            } else {
+                icon.textContent = '🌙'; // ライトモード中は「月(ダークへ)」を表示
+            }
+        };
+
+        // 初期化実行
+        setTheme(getPreferredTheme());
+
+        // ④ ボタンを押したときの関数
+        const toggleTheme = () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setStoredTheme(newTheme); // 設定を保存
+            setTheme(newTheme);       // 適用
+        };
+    </script>
 </body>
 </html>
