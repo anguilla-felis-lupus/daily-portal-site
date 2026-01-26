@@ -78,7 +78,7 @@ def main():
     pages = [
         ("index.html", "AI News", "index", {"column": news_column, "article_list": news_articles}),
         ("market.html", "Market", "market", market_data),
-        ("animal.html", "Animal", "animal", animal_data), # 修正済みの辞書渡し
+        ("animal.html", "Animal", "animal", animal_data),
         ("entertainment.html", "Entertainment", "entertainment", {"manga_list": ent_data['manga'], "anime_list": ent_data['anime']})
     ]
 
