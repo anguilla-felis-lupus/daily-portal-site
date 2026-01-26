@@ -55,7 +55,8 @@ def main():
 
     # --- [Market / 株価] ---
     print("📈 株価データ取得中...")
-    market_text = fetch_market.generate_market_report()
+    # 辞書データ {"summary": "...", "data": {...}} を受け取る
+    market_data = fetch_market.generate_market_report()
 
     # --- [Animal / 動物] ---
     print("🦁 動物コラム生成中...")
@@ -76,7 +77,7 @@ def main():
 
     pages = [
         ("index.html", "AI News", "index", {"column": news_column, "article_list": news_articles}),
-        ("market.html", "Market", "market", {"content": market_text}),
+        ("market.html", "Market", "market", market_data),
         ("animal.html", "Animal", "animal", animal_data), # 修正済みの辞書渡し
         ("entertainment.html", "Entertainment", "entertainment", {"manga_list": ent_data['manga'], "anime_list": ent_data['anime']})
     ]
