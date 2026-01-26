@@ -94,21 +94,41 @@ def generate_animal_column():
         "水族館の人気者", "絶滅動物", "生き物たちの特殊能力"
     ]
     
-    # ランダムに「2つ」選ぶ（重複なし）
-    selected_themes = random.sample(themes, 2)
-    
     columns_list = []
+    max_retries = 5  # 最大5回までトライする
+    attempts = 0
     
-    for theme in selected_themes:
+    # 2つ集まるまで、または試行回数切れまでループ
+    while len(columns_list) < 2 and attempts < max_retries:
+        attempts += 1
+        theme = random.choice(themes)
+        
+        # 既に選ばれたテーマと同じならスキップ（重複回避）
+        if any(c['theme'] == theme for c in columns_list):
+            continue
+
+        print(f"[{attempts}/{max_retries}] テーマ「{theme}」で生成を試みます...")
         col_data = generate_single_column(theme)
+        
         if col_data:
             columns_list.append(col_data)
-        # 連続アクセスを防ぐため少し待つ
+        else:
+            print("生成失敗。リトライします。")
+            
+        # 連続アクセス防止の待機
         time.sleep(2)
 
-    # リスト形式で返す
+    # 万が一、試行回数切れで0個だった場合のダミーデータ
+    if not columns_list:
+        columns_list.append({
+            "headline": "生成に失敗しました",
+            "text": "本日はコラムの生成に失敗しました。時間をおいて再実行してください。",
+            "image": None,
+            "theme": "エラー"
+        })
+
     return {"columns": columns_list}
 
 if __name__ == "__main__":
     result = generate_animal_column()
-    print(f"生成されたコラム数: {len(result['columns'])}")
+    print(f"最終的に生成されたコラム数: {len(result['columns'])}")
