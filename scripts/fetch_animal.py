@@ -1,8 +1,9 @@
 import google.generativeai as genai
 import os
 import random
-import requests # 追加
+import requests
 import json
+import time
 
 def get_animal_image(query):
     """Pixabay APIで動物の画像を検索する"""
@@ -13,46 +14,35 @@ def get_animal_image(query):
     url = "https://pixabay.com/api/"
     params = {
         "key": api_key,
-        "q": query,          # 検索キーワード（動物名）
-        "lang": "ja",        # 日本語で検索
-        "image_type": "photo", # 写真に限定
-        "per_page": 3        # 3枚だけ取得
+        "q": query,
+        "lang": "ja",
+        "image_type": "photo",
+        "per_page": 3
     }
     
     try:
         response = requests.get(url, params=params, timeout=10)
         data = response.json()
-        
         if data["totalHits"] > 0:
-            # 最初の画像のURL（webformatURLは程よいサイズ）を返す
             return data["hits"][0]["webformatURL"]
         else:
-            # ヒットしなければNone
             return None
-            
     except Exception as e:
         print(f"Pixabay検索エラー: {e}")
         return None
 
-def generate_animal_column():
-    print("🦁 動物コラムを作成中...")
-
+def generate_single_column(theme_category):
+    """1つのテーマでコラムと画像を生成する関数"""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        # エラー時は画像なしで返す
-        return {"text": "APIキーがありません。", "image": None, "theme": "エラー"}
+        return None
 
     genai.configure(api_key=api_key)
-    # AIにJSONで返させる設定
     model = genai.GenerativeModel(
-        'gemini-2.5-flash',
+        'gemini-1.5-flash',
         generation_config={"response_mime_type": "application/json"}
     )
 
-    themes = ["深海生物", "犬の不思議な行動", "最強の昆虫", "絶滅危惧種", "動物園の人気者", "水族館の人気者", "サバンナの生き物", "絶滅動物", "危険生物", "猫の気持ち", "身近な生き物の生態"]
-    theme_category = random.choice(themes)
-
-    # プロンプトを修正し、JSON形式で「テーマ（生き物名）」と「本文」を分けさせる
     prompt = f"""
     「{theme_category}」というカテゴリから、具体的な生き物を1つ選び、面白くて誰かに話したくなる豆知識コラムを書いてください。
     出力は以下のJSON形式でお願いします。
@@ -67,7 +57,6 @@ def generate_animal_column():
     try:
         response = model.generate_content(prompt)
         text = response.text
-        # Markdown記号の除去
         if "```json" in text:
             text = text.replace("```json", "").replace("```", "")
         elif "```" in text:
@@ -75,17 +64,13 @@ def generate_animal_column():
             
         ai_data = json.loads(text)
         
-        # AIが決めた生き物名を取得
         animal_name = ai_data.get("theme_animal", theme_category)
         title = ai_data.get("column_title", f"{animal_name}の豆知識")
         body_text = ai_data.get("column_text", "コラム生成失敗")
 
-        print(f"✨ 今日のテーマ: {animal_name} で画像を検索します...")
-        
-        # その名前で画像を検索
+        print(f"✨ テーマ: {animal_name} の画像を検索します...")
         image_url = get_animal_image(animal_name)
 
-        # 本文、画像URL、タイトルをまとめて返す
         return {
             "headline": title,
             "text": body_text,
@@ -95,10 +80,35 @@ def generate_animal_column():
         
     except Exception as e:
         print(f"AI生成エラー: {e}")
-        return {"headline": "エラー", "text": f"生成中にエラーが発生しました: {e}", "image": None, "theme": "エラー"}
+        return None
+
+def generate_animal_column():
+    print("🦁 動物コラムを作成中...")
+    
+    # テーマの候補
+    themes = [
+        "深海生物", "犬の不思議な行動", "猫の秘密", "最強の昆虫", 
+        "絶滅危惧種", "動物園の人気者", "サバンナの生き物", 
+        "極寒の地の動物", "身近な鳥の意外な生態", "危険な生物",
+        "アマゾンの動物", "砂漠の生き物", "身近な生き物の生態",
+        "水族館の人気者", "絶滅動物", "生き物たちの特殊能力"
+    ]
+    
+    # ランダムに「2つ」選ぶ（重複なし）
+    selected_themes = random.sample(themes, 2)
+    
+    columns_list = []
+    
+    for theme in selected_themes:
+        col_data = generate_single_column(theme)
+        if col_data:
+            columns_list.append(col_data)
+        # 連続アクセスを防ぐため少し待つ
+        time.sleep(2)
+
+    # リスト形式で返す
+    return {"columns": columns_list}
 
 if __name__ == "__main__":
     result = generate_animal_column()
-    print(f"タイトル: {result['headline']}")
-    print(f"画像URL: {result['image']}")
-    print(f"本文: {result['text'][:50]}...")
+    print(f"生成されたコラム数: {len(result['columns'])}")
