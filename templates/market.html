@@ -1,12 +1,76 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card border-success">
-    <div class="card-header bg-success text-white">
-        💰 今日のマーケット情報
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="card mb-4 border-success">
+    <div class="card-header bg-success text-white fw-bold">
+        💰 今日の市況コメント
     </div>
     <div class="card-body">
-        <p class="card-text">{{ content | replace('\n', '<br>') | safe }}</p>
+        <p class="card-text">{{ summary | replace('\n', '<br>') | safe }}</p>
     </div>
 </div>
+
+<div class="row">
+    {% for key, item in data.items() %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">{{ item.name }}</span>
+                <span class="badge {% if '+' in item.diff %}bg-danger{% else %}bg-secondary{% endif %}">
+                    {{ item.current }} ({{ item.diff }})
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-{{ key }}"></canvas>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Pythonから渡されたデータをJavaScriptで使えるようにする
+    const marketData = {{ data | tojson }};
+
+    // すべての銘柄についてループしてグラフを描く
+    for (const [key, item] of Object.entries(marketData)) {
+        const ctx = document.getElementById('chart-' + key).getContext('2d');
+        
+        // 線の色（上昇なら赤、下落なら青）
+        const lineColor = item.color === 'red' ? 'rgba(255, 99, 132, 1)' : 'rgba(54, 162, 235, 1)';
+        const bgColor = item.color === 'red' ? 'rgba(255, 99, 132, 0.1)' : 'rgba(54, 162, 235, 0.1)';
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: item.dates, // 横軸（日付）
+                datasets: [{
+                    label: item.name,
+                    data: item.prices, // 縦軸（価格）
+                    borderColor: lineColor,
+                    backgroundColor: bgColor,
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    fill: true, // 下側を塗りつぶす
+                    tension: 0.3 // 曲線をなめらかに
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false } // 凡例は消す
+                },
+                scales: {
+                    x: { display: true }, // 横軸表示
+                    y: { 
+                        display: true,
+                        beginAtZero: false // 0からではなく、価格の範囲に合わせて拡大
+                    }
+                }
+            }
+        });
+    }
+</script>
 {% endblock %}
