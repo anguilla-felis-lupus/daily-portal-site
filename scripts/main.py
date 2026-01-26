@@ -9,6 +9,7 @@ import fetch_news
 import fetch_market
 import fetch_animal
 import fetch_entertainment
+import fetch_lifestyle
 
 # 出力先の基本設定
 OUTPUT_DIR = "." 
@@ -66,6 +67,10 @@ def main():
     print("📚 エンタメデータ取得中...")
     ent_data = fetch_entertainment.get_entertainment_info()
 
+    # --- [Lifestyle / 天気・占い] --- ★ここから追加
+    print("☀️ 生活情報データを取得中...")
+    lifestyle_data = fetch_lifestyle.get_lifestyle_data()
+
     # 4. HTMLの生成
     env = Environment(loader=FileSystemLoader('templates'))
     
@@ -80,6 +85,7 @@ def main():
         ("market.html", "Market", "market", market_data),
         ("animal.html", "Animal", "animal", animal_data),
         ("entertainment.html", "Entertainment", "entertainment", {"manga_list": ent_data['manga'], "anime_list": ent_data['anime']})
+        ("lifestyle.html", "Lifestyle", "lifestyle", lifestyle_data)
     ]
 
     # (A) 最新版の生成
