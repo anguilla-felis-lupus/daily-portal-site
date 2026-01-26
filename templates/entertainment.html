@@ -1,31 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="mb-3">📚 今日の人気漫画 TOP3</h3>
 <div class="row">
-    {% for manga in manga_list %}
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ manga.image }}" class="card-img-top" alt="{{ manga.title }}" style="height: 300px; object-fit: cover;">
-            <div class="card-body">
-                <h5 class="card-title">{{ manga.rank }}位: {{ manga.title }}</h5>
-                <p class="card-text small">{{ manga.synopsis }}</p>
-                <a href="{{ manga.url }}" target="_blank" class="btn btn-sm btn-outline-primary">詳細を見る</a>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-primary">
+            <div class="card-header bg-primary text-white fw-bold">
+                📺 今期のアニメ（人気順）
             </div>
+            <ul class="list-group list-group-flush">
+                {% for anime in anime_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">{{ anime.title }}</span>
+                        <br>
+                        <small class="text-muted">放送日: {{ anime.broadcast }}</small>
+                    </div>
+                    {% if anime.score %}
+                    <span class="badge bg-success rounded-pill">{{ anime.score }}</span>
+                    {% endif %}
+                </li>
+                {% else %}
+                <li class="list-group-item">データがありません</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    {% endfor %}
-</div>
 
-<h3 class="mt-5 mb-3">📺 注目の放送中アニメ</h3>
-<ul class="list-group">
-    {% for anime in anime_list %}
-    <li class="list-group-item d-flex align-items-center">
-        <img src="{{ anime.image }}" alt="" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
-        <a href="{{ anime.url }}" target="_blank" class="text-decoration-none text-dark fw-bold">
-            {{ anime.title }}
-        </a>
-    </li>
-    {% endfor %}
-</ul>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-success">
+            <div class="card-header bg-success text-white fw-bold">
+                📖 人気のマンガ・トレンド
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for manga in manga_list %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1 fw-bold">{{ manga.title }}</h6>
+                    </div>
+                    <p class="mb-1 small text-muted">{{ manga.author }}</p>
+                    <small class="text-secondary">{{ manga.publisher }}</small>
+                </li>
+                {% else %}
+                <li class="list-group-item">データがありません</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}
