@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card h-100 border-info">
+            <div class="card-header bg-info text-white fw-bold">
+                ☀️ 今日の天気予報
+            </div>
+            <div class="card-body text-center">
+                {% if weather %}
+                    <h1 class="display-1 mb-0">{{ weather.current_icon }}</h1>
+                    <h2 class="display-4 fw-bold">{{ weather.current_temp }}<span class="fs-4">°C</span></h2>
+                    <p class="text-muted">現在の気温</p>
+                    
+                    <hr>
+                    
+                    <div class="row mt-4">
+                        <div class="col-6 border-end">
+                            <h5 class="fw-bold text-danger">{{ weather.today_max }}°C</h5>
+                            <h5 class="fw-bold text-primary">{{ weather.today_min }}°C</h5>
+                            <small>今日の最高/最低</small>
+                            <div class="mt-2 badge bg-secondary">降水確率 {{ weather.rain_prob }}%</div>
+                        </div>
+                        <div class="col-6">
+                            <h1 class="mb-0">{{ weather.tomorrow_icon }}</h1>
+                            <small>明日の天気</small>
+                            <div class="mt-1">
+                                <span class="text-danger fw-bold">{{ weather.tomorrow_max }}°</span> / 
+                                <span class="text-primary fw-bold">{{ weather.tomorrow_min }}°</span>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>天気情報の取得に失敗しました。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <div class="card h-100 border-warning">
+            <div class="card-header bg-warning text-dark fw-bold">
+                🔮 今日の運勢ランキング
+            </div>
+            <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                {% for item in fortune %}
+                <div class="list-group-item d-flex align-items-center">
+                    <div class="me-3 text-center" style="min-width: 40px;">
+                        {% if item.rank == 1 %}
+                            <span class="badge bg-danger rounded-pill fs-5">1位</span>
+                        {% elif item.rank == 2 %}
+                            <span class="badge bg-primary rounded-pill fs-6">2位</span>
+                        {% elif item.rank == 3 %}
+                            <span class="badge bg-success rounded-pill fs-6">3位</span>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-pill">{{ item.rank }}位</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex-grow-1">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1 fw-bold">{{ item.sign }}</h5>
+                            <small class="text-muted">ラッキーアイテム: {{ item.item }}</small>
+                        </div>
+                        <p class="mb-1 small">{{ item.comment }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="list-group-item">占いの生成に失敗しました。</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
