@@ -6,12 +6,11 @@ import json
 import time
 
 def get_animal_image(query):
-    """Pixabay APIで動物の画像を検索する"""
     api_key = os.environ.get("PIXABAY_API_KEY")
     if not api_key:
         return None
         
-    url = "https://pixabay.com/api/"
+    url = "[https://pixabay.com/api/](https://pixabay.com/api/)"
     params = {
         "key": api_key,
         "q": query,
@@ -37,9 +36,9 @@ def generate_single_column(theme_category):
         return None
 
     genai.configure(api_key=api_key)
-    # ★重要: ここを確実に 1.5-flash にする
+    # ★修正箇所: 正式バージョン名 'gemini-1.5-flash-001' を指定
     model = genai.GenerativeModel(
-        'gemini-1.5-flash',
+        'gemini-1.5-flash-001',
         generation_config={"response_mime_type": "application/json"}
     )
 
@@ -85,7 +84,6 @@ def generate_single_column(theme_category):
 def generate_animal_column():
     print("🦁 動物コラムを作成中...")
     
-    # テーマの候補
     themes = [
         "深海生物", "犬の不思議な行動", "猫の秘密", "最強の昆虫", 
         "絶滅危惧種", "動物園の人気者", "サバンナの生き物", 
@@ -114,8 +112,6 @@ def generate_animal_column():
         else:
             print("❌ 生成失敗。")
             
-        # ★重要: ここを 2秒→20秒 に変更。
-        # 1つ目の生成後、2つ目を作る前にしっかり休んで制限を回避する。
         if len(columns_list) < 2:
             print("⏳ 連続アクセス防止のため20秒待機します...")
             time.sleep(20)
