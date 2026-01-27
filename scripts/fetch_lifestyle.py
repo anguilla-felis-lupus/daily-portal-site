@@ -56,7 +56,7 @@ def get_fortune():
     genai.configure(api_key=api_key)
     # ★修正箇所2: 正式バージョン名 'gemini-1.5-flash-001' を指定
     model = genai.GenerativeModel(
-        'gemini-1.5-flash-001',
+        'gemini-pro',
         generation_config={"response_mime_type": "application/json"}
     )
     
