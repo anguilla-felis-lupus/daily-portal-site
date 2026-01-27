@@ -32,14 +32,14 @@ def get_animal_image(query):
         return None
 
 def generate_single_column(theme_category):
-    """1つのテーマでコラムと画像を生成する関数"""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
 
     genai.configure(api_key=api_key)
+    # ★重要: ここを確実に 1.5-flash にする
     model = genai.GenerativeModel(
-        'gemini-2.5-flash',
+        'gemini-1.5-flash',
         generation_config={"response_mime_type": "application/json"}
     )
 
@@ -95,15 +95,13 @@ def generate_animal_column():
     ]
     
     columns_list = []
-    max_retries = 5  # 最大5回までトライする
+    max_retries = 5
     attempts = 0
     
-    # 2つ集まるまで、または試行回数切れまでループ
     while len(columns_list) < 2 and attempts < max_retries:
         attempts += 1
         theme = random.choice(themes)
         
-        # 既に選ばれたテーマと同じならスキップ（重複回避）
         if any(c['theme'] == theme for c in columns_list):
             continue
 
@@ -112,17 +110,20 @@ def generate_animal_column():
         
         if col_data:
             columns_list.append(col_data)
+            print("✅ 生成成功！")
         else:
-            print("生成失敗。リトライします。")
+            print("❌ 生成失敗。")
             
-        # 連続アクセス防止の待機
-        time.sleep(2)
+        # ★重要: ここを 2秒→20秒 に変更。
+        # 1つ目の生成後、2つ目を作る前にしっかり休んで制限を回避する。
+        if len(columns_list) < 2:
+            print("⏳ 連続アクセス防止のため20秒待機します...")
+            time.sleep(20)
 
-    # 万が一、試行回数切れで0個だった場合のダミーデータ
     if not columns_list:
         columns_list.append({
             "headline": "生成に失敗しました",
-            "text": "本日はコラムの生成に失敗しました。時間をおいて再実行してください。",
+            "text": "本日はコラムの生成に失敗しました。",
             "image": None,
             "theme": "エラー"
         })
@@ -131,4 +132,4 @@ def generate_animal_column():
 
 if __name__ == "__main__":
     result = generate_animal_column()
-    print(f"最終的に生成されたコラム数: {len(result['columns'])}")
+    print(f"生成数: {len(result['columns'])}")
