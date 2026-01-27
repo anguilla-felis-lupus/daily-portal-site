@@ -54,12 +54,12 @@ def get_fortune():
         return []
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-pro')
-    # # ★修正箇所2: 正式バージョン名 'gemini-1.5-flash-001' を指定
-    # model = genai.GenerativeModel(
-    #     'gemini-pro',
-    #     generation_config={"response_mime_type": "application/json"}
-    # )
+    # model = genai.GenerativeModel('gemini-pro')
+    # ★修正箇所2: 正式バージョン名 'gemini-1.5-flash-001' を指定
+    model = genai.GenerativeModel(
+        'gemini-2.5-flash-lite',
+        generation_config={"response_mime_type": "application/json"}
+    )
     
     prompt = """
     今日の「12星座占いランキング」をJSON形式で作成してください。
