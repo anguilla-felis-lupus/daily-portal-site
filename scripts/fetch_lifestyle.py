@@ -7,7 +7,8 @@ LAT = 35.6812
 LON = 139.7671
 
 def get_weather():
-    url = "[https://api.open-meteo.com/v1/forecast](https://api.open-meteo.com/v1/forecast)"
+    # ★修正箇所1: URLの[]()を削除して、純粋なURL文字列にする
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": LAT,
         "longitude": LON,
@@ -53,9 +54,9 @@ def get_fortune():
         return []
 
     genai.configure(api_key=api_key)
-    # ★重要: ここも確実に 1.5-flash にする
+    # ★修正箇所2: 正式バージョン名 'gemini-1.5-flash-001' を指定
     model = genai.GenerativeModel(
-        'gemini-1.5-flash',
+        'gemini-1.5-flash-001',
         generation_config={"response_mime_type": "application/json"}
     )
     
