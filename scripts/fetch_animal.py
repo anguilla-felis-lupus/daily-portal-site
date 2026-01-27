@@ -10,7 +10,8 @@ def get_animal_image(query):
     if not api_key:
         return None
         
-    url = "[https://pixabay.com/api/](https://pixabay.com/api/)"
+    # url = "[https://pixabay.com/api/](https://pixabay.com/api/)"
+    url = "https://pixabay.com/api/"
     params = {
         "key": api_key,
         "q": query,
