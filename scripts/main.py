@@ -3,6 +3,7 @@ import shutil
 from jinja2 import Environment, FileSystemLoader
 import datetime
 import glob
+import time  # 時間制御用
 
 # 各スクリプトをインポート
 import fetch_news
@@ -18,15 +19,13 @@ ARCHIVE_ROOT = "archives"
 def main():
     print("🚀 サイト生成プロセスを開始します...")
 
-    # --- 修正箇所: 日本時間 (JST) を設定 ---
-    # サーバーの時刻に関係なく、強制的に日本時間 (+9時間) を使う
+    # 1. 日本時間 (JST) の設定
     t_delta = datetime.timedelta(hours=9)
     JST = datetime.timezone(t_delta, 'JST')
     now = datetime.datetime.now(JST)
     
-    date_str = now.strftime('%Y-%m-%d') # 例: 2026-01-23
+    date_str = now.strftime('%Y-%m-%d')
     time_str = now.strftime('%Y-%m-%d %H:%M')
-    # ------------------------------------
 
     print(f"🕒 日本時間: {time_str} の更新を開始します")
 
@@ -39,7 +38,8 @@ def main():
     if date_str not in archive_dates:
         archive_dates.insert(0, date_str)
 
-    # 3. データの収集
+    # 3. データの収集（各ステップの間に30秒の休憩を入れます）
+    
     # --- [TOP / AIニュース] ---
     print("📰 ニュースデータ取得中...")
     try:
@@ -51,27 +51,57 @@ def main():
             news_column = news_result
             news_articles = []
     except Exception as e:
-        news_column = f"エラー: {e}"
+        print(f"ニュース取得エラー: {e}")
+        news_column = "取得エラー"
         news_articles = []
+    
+    print("☕ 30秒休憩中...(API制限を確実に回避)")
+    time.sleep(30) # ★30秒休憩
 
     # --- [Market / 株価] ---
     print("📈 株価データ取得中...")
-    # 辞書データ {"summary": "...", "data": {...}} を受け取る
-    market_data = fetch_market.generate_market_report()
+    try:
+        market_data = fetch_market.generate_market_report()
+    except Exception as e:
+        print(f"株価取得エラー: {e}")
+        market_data = {"summary": "取得エラー", "data": {}}
+
+    print("☕ 30秒休憩中...(API制限を確実に回避)")
+    time.sleep(30) # ★30秒休憩
 
     # --- [Animal / 動物] ---
     print("🦁 動物コラム生成中...")
-    animal_data = fetch_animal.generate_animal_column()
+    try:
+        animal_data = fetch_animal.generate_animal_column()
+    except Exception as e:
+        print(f"動物取得エラー: {e}")
+        animal_data = {"columns": []}
+    
+    print("☕ 30秒休憩中...(API制限を確実に回避)")
+    time.sleep(30) # ★30秒休憩
     
     # --- [Entertainment / エンタメ] ---
     print("📚 エンタメデータ取得中...")
-    ent_data = fetch_entertainment.get_entertainment_info()
+    # エンタメはGeminiを使わないので休憩なしでもOKですが、念の為少し待つ
+    try:
+        ent_data = fetch_entertainment.get_entertainment_info()
+    except Exception as e:
+        print(f"エンタメ取得エラー: {e}")
+        ent_data = {"manga": [], "anime": []}
 
-    # --- [Lifestyle / 天気・占い] --- ★ここから追加
+    print("☕ 10秒休憩中...")
+    time.sleep(10) 
+
+    # --- [Lifestyle / 天気・占い] ---
     print("☀️ 生活情報データを取得中...")
-    lifestyle_data = fetch_lifestyle.get_lifestyle_data()
+    try:
+        lifestyle_data = fetch_lifestyle.get_lifestyle_data()
+    except Exception as e:
+        print(f"生活情報取得エラー: {e}")
+        lifestyle_data = {"weather": None, "fortune": []}
 
-    # 4. HTMLの生成
+
+    # 4. HTMLの生成設定
     env = Environment(loader=FileSystemLoader('templates'))
     
     common_context = {
@@ -90,15 +120,18 @@ def main():
 
     # (A) 最新版の生成
     for filename, title, active_tab, context in pages:
-        template = env.get_template(filename)
-        html = template.render(
-            title=title,
-            active_tab=active_tab,
-            **context,
-            **common_context
-        )
-        with open(f'{OUTPUT_DIR}/{filename}', 'w', encoding='utf-8') as f:
-            f.write(html)
+        try:
+            template = env.get_template(filename)
+            html = template.render(
+                title=title,
+                active_tab=active_tab,
+                **context,
+                **common_context
+            )
+            with open(f'{OUTPUT_DIR}/{filename}', 'w', encoding='utf-8') as f:
+                f.write(html)
+        except Exception as e:
+            print(f"HTML生成エラー ({filename}): {e}")
 
     # 5. アーカイブの保存
     today_archive_dir = os.path.join(ARCHIVE_ROOT, date_str)
@@ -110,15 +143,18 @@ def main():
     common_context["is_archive"] = True
     
     for filename, title, active_tab, context in pages:
-        template = env.get_template(filename)
-        html = template.render(
-            title=title,
-            active_tab=active_tab,
-            **context,
-            **common_context
-        )
-        with open(f'{today_archive_dir}/{filename}', 'w', encoding='utf-8') as f:
-            f.write(html)
+        try:
+            template = env.get_template(filename)
+            html = template.render(
+                title=title,
+                active_tab=active_tab,
+                **context,
+                **common_context
+            )
+            with open(f'{today_archive_dir}/{filename}', 'w', encoding='utf-8') as f:
+                f.write(html)
+        except Exception as e:
+            print(f"アーカイブ生成エラー ({filename}): {e}")
 
     print("✅ サイト生成とアーカイブ保存が完了しました！")
 
