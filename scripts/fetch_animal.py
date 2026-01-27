@@ -36,11 +36,12 @@ def generate_single_column(theme_category):
         return None
 
     genai.configure(api_key=api_key)
-    # ★修正箇所: 正式バージョン名 'gemini-1.5-flash-001' を指定
-    model = genai.GenerativeModel(
-        'gemini-pro',
-        generation_config={"response_mime_type": "application/json"}
-    )
+    model = genai.GenerativeModel('gemini-pro')
+    # # ★修正箇所: 正式バージョン名 'gemini-1.5-flash-001' を指定
+    # model = genai.GenerativeModel(
+    #     'gemini-pro',
+    #     generation_config={"response_mime_type": "application/json"}
+    # )
 
     prompt = f"""
     「{theme_category}」というカテゴリから、具体的な生き物を1つ選び、面白くて誰かに話したくなる豆知識コラムを書いてください。
