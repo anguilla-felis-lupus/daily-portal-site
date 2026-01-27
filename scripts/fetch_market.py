@@ -63,7 +63,7 @@ def generate_market_report():
     
     if api_key:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         
         prompt = f"""
         以下の市場データを元に、投資家向けの「今日の市況概況」を書いてください。
