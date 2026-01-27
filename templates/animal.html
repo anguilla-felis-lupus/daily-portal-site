@@ -1,7 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="mb-4">🦁 今日のどうぶつ豆知識（2選）</h3>
+
+{% if nasa %}
+<div class="card mb-5 border-0 shadow-sm" style="background-color: #000; color: #fff;">
+    <div class="card-header bg-transparent border-secondary text-center">
+        <span class="badge bg-primary mb-2">NASA APOD</span><br>
+        <h4 class="fw-bold" style="letter-spacing: 2px;">今日の宇宙写真</h4>
+    </div>
+    
+    {% if nasa.media_type == 'image' %}
+    <img src="{{ nasa.url }}" class="card-img-top" alt="{{ nasa.title }}" style="max-height: 500px; object-fit: contain; background-color: #000;">
+    
+    {% elif nasa.media_type == 'video' %}
+    <div class="ratio ratio-16x9">
+        <iframe src="{{ nasa.url }}" title="NASA Video" allowfullscreen></iframe>
+    </div>
+    {% endif %}
+
+    <div class="card-body">
+        <h5 class="card-title fw-bold text-warning">{{ nasa.title }}</h5>
+        <p class="card-text mt-3" style="line-height: 1.8; font-size: 0.95em;">
+            {{ nasa.text }}
+        </p>
+        <div class="text-end">
+            <small class="text-secondary">Source: NASA Astronomy Picture of the Day</small>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h3 class="mb-4 text-center border-bottom pb-2">🦁 今日のどうぶつ豆知識（2選）</h3>
 
 {% for col in columns %}
 <div class="card border-warning mb-5">
