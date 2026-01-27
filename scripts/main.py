@@ -11,6 +11,7 @@ import fetch_market
 import fetch_animal
 import fetch_entertainment
 import fetch_lifestyle
+import fetch_nasa # ★追加
 
 # 出力先の基本設定
 OUTPUT_DIR = "." 
@@ -79,10 +80,22 @@ def main():
     
     print("☕ 30秒休憩中...(API制限を確実に回避)")
     time.sleep(30) # ★30秒休憩
+
+    # --- [NASA / 宇宙] --- ★追加
+    print("🚀 NASAデータを取得中...")
+    try:
+        nasa_data = fetch_nasa.get_nasa_data()
+        # 動物データにNASAデータを合体させる
+        if animal_data:
+            animal_data['nasa'] = nasa_data
+    except Exception as e:
+        print(f"NASA取得エラー: {e}")
+    
+    print("☕ 30秒休憩中...(API制限を確実に回避)")
+    time.sleep(30) # ★30秒休憩
     
     # --- [Entertainment / エンタメ] ---
     print("📚 エンタメデータ取得中...")
-    # エンタメはGeminiを使わないので休憩なしでもOKですが、念の為少し待つ
     try:
         ent_data = fetch_entertainment.get_entertainment_info()
     except Exception as e:
