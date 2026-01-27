@@ -41,11 +41,11 @@ def generate_news():
         return {"column": "APIキーエラー", "articles": []}
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-pro')
-    # model = genai.GenerativeModel(
-    #     'gemini-pro',
-    #     generation_config={"response_mime_type": "application/json"}
-    # )
+    # model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel(
+        'gemini-2.5-flash-lite',
+        generation_config={"response_mime_type": "application/json"}
+    )
 
     rss_url = get_rss_url()
     print(f"📰 Googleニュースから記事を取得中... (キーワード数: {len(KEYWORDS)})")
