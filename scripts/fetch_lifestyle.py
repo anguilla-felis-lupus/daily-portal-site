@@ -11,13 +11,16 @@ CITIES = [
     {"name": "札幌", "lat": 43.0618, "lon": 141.3545},
     {"name": "那覇", "lat": 26.2123, "lon": 127.6791},
     {"name": "北京", "lat": 39.9035, "lon": 116.3880},
+    {"name": "ニューデリー", "lat": 28.6139, "lon": 77.2090},
     {"name": "モスクワ", "lat": 55.7508, "lon": 37.6172},
     {"name": "ニューヨーク", "lat": 40.7128, "lon": -74.0060},
+    {"name": "ロサンゼルス", "lat": 34.0194, "lon": -118.4110},
     {"name": "ロンドン", "lat": 51.5074, "lon": -0.1278},
     {"name": "パリ", "lat": 48.8566, "lon": 2.3522},
     {"name": "シドニー", "lat": -33.8688, "lon": 151.2093},
     {"name": "リオデジャネイロ", "lat": -22.9035, "lon": -43.2096},
     {"name": "カイロ", "lat": 30.0446, "lon": 31.2456},
+    {"name": "ヨハネスブルグ", "lat": -26.2044, "lon": 28.0416},
     {"name": "シンガポール", "lat": 1.3521, "lon": 103.8198}
 ]
 # ----------------------------------------
@@ -32,39 +35,53 @@ def get_weather_for_location(lat, lon, name):
         "timezone": "auto"
     }
     
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        data = response.json()
+    # ★修正: 最大3回までリトライする処理を追加
+    max_retries = 3
+    for i in range(max_retries):
+        try:
+            # タイムアウトを20秒に延長
+            response = requests.get(url, params=params, timeout=20)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                def get_icon(code):
+                    if code == 0: return "☀️"
+                    if code <= 3: return "☁️"
+                    if code <= 48: return "🌫"
+                    if code <= 67: return "🌧"
+                    if code <= 77: return "☃️"
+                    if code <= 82: return "☔"
+                    if code <= 99: return "⛈"
+                    return "❓"
+                
+                current = data.get("current", {})
+                daily = data.get("daily", {})
+                
+                return {
+                    "name": name,
+                    "lat": lat,
+                    "lon": lon,
+                    "current_temp": current.get("temperature_2m"),
+                    "current_icon": get_icon(current.get("weather_code", 0)),
+                    "today_max": daily.get("temperature_2m_max", [0])[0],
+                    "today_min": daily.get("temperature_2m_min", [0])[0],
+                    "rain_prob": daily.get("precipitation_probability_max", [0])[0],
+                    "tomorrow_icon": get_icon(daily.get("weather_code", [0,0])[1]),
+                    "tomorrow_max": daily.get("temperature_2m_max", [0])[1],
+                    "tomorrow_min": daily.get("temperature_2m_min", [0])[1],
+                }
+            else:
+                print(f"⚠️ {name}: APIエラー (Status: {response.status_code}) - {i+1}回目の失敗")
         
-        def get_icon(code):
-            if code == 0: return "☀️"
-            if code <= 3: return "☁️"
-            if code <= 48: return "🌫"
-            if code <= 67: return "🌧"
-            if code <= 77: return "☃️"
-            if code <= 82: return "☔"
-            if code <= 99: return "⛈"
-            return "❓"
+        except Exception as e:
+            print(f"⚠️ {name}: 接続エラー ({e}) - {i+1}回目の失敗")
         
-        current = data.get("current", {})
-        daily = data.get("daily", {})
-        
-        return {
-            "name": name,
-            "lat": lat,
-            "lon": lon,
-            "current_temp": current.get("temperature_2m"),
-            "current_icon": get_icon(current.get("weather_code", 0)),
-            "today_max": daily.get("temperature_2m_max", [0])[0],
-            "today_min": daily.get("temperature_2m_min", [0])[0],
-            "rain_prob": daily.get("precipitation_probability_max", [0])[0],
-            "tomorrow_icon": get_icon(daily.get("weather_code", [0,0])[1]),
-            "tomorrow_max": daily.get("temperature_2m_max", [0])[1],
-            "tomorrow_min": daily.get("temperature_2m_min", [0])[1],
-        }
-    except Exception as e:
-        print(f"天気取得エラー ({name}): {e}")
-        return None
+        # エラーだった場合、少し待ってから再挑戦
+        time.sleep(2)
+
+    print(f"❌ {name}: 3回試しましたが取得できませんでした。")
+    return None
 
 def get_fortune():
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -72,9 +89,8 @@ def get_fortune():
         return []
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash-lite')
+    model = genai.GenerativeModel('gemini-2.5-flash')
     
-    # ★修正: 出力フォーマットを厳格に指定（ここが重要）
     prompt = """
     今日の「12星座占いランキング」をJSON形式で作成してください。
     運勢の良い順（1位〜12位）に並べてください。
@@ -101,14 +117,19 @@ def get_fortune():
         return []
 
 def get_lifestyle_data():
-    print("☀️ 世界の天気と占いを生成中...")
+    print(f"☀️ 世界{len(CITIES)}都市の天気を取得開始...")
     
     weather_list = []
-    for city in CITIES:
+    for i, city in enumerate(CITIES):
+        print(f"[{i+1}/{len(CITIES)}] {city['name']} の天気を取得中...")
         data = get_weather_for_location(city["lat"], city["lon"], city["name"])
         if data:
             weather_list.append(data)
-        time.sleep(0.5)
+        
+        # ★修正: 待機時間を0.5秒→1.0秒に延長してAPIに優しくする
+        time.sleep(1.5)
+
+    print(f"✅ 天気取得完了: {len(weather_list)}/{len(CITIES)} 成功")
 
     return {
         "weather": weather_list[0] if weather_list else None,
