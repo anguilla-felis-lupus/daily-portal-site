@@ -46,7 +46,7 @@ def generate_news():
     genai.configure(api_key=api_key)
     # model = genai.GenerativeModel('gemini-pro')
     model = genai.GenerativeModel(
-        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash',
         generation_config={"response_mime_type": "application/json"}
     )
 
