@@ -111,7 +111,8 @@ def main():
         lifestyle_data = fetch_lifestyle.get_lifestyle_data()
     except Exception as e:
         print(f"生活情報取得エラー: {e}")
-        lifestyle_data = {"weather": None, "fortune": []}
+        # ★修正: エラー時でも weather_list を空で用意しておく
+        lifestyle_data = {"weather": None, "fortune": [], "weather_list": []}
 
 
     # 4. HTMLの生成設定
