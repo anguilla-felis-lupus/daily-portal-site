@@ -1,11 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="[https://unpkg.com/leaflet@1.9.4/dist/leaflet.css](https://unpkg.com/leaflet@1.9.4/dist/leaflet.css)" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="[https://unpkg.com/leaflet@1.9.4/dist/leaflet.js](https://unpkg.com/leaflet@1.9.4/dist/leaflet.js)" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <div class="row">
+    <div class="col-12 mb-4">
+        <div class="card border-primary shadow-sm">
+            <div class="card-header bg-primary text-white fw-bold">
+                🌍 世界の天気マップ
+            </div>
+            <div class="card-body p-0">
+                <div id="weatherMap" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-5 mb-4">
         <div class="card h-100 border-info">
             <div class="card-header bg-info text-white fw-bold">
-                ☀️ 今日の天気予報
+                📍 ホーム天気 ({{ weather.name }})
             </div>
             <div class="card-body text-center">
                 {% if weather %}
@@ -73,4 +87,42 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 地図の初期化（中心は日本付近に設定）
+        var map = L.map('weatherMap').setView([35.0, 135.0], 3);
+
+        // 地図タイル（OpenStreetMap）の読み込み
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="[https://www.openstreetmap.org/copyright](https://www.openstreetmap.org/copyright)">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Pythonから渡された天気リスト
+        var weatherList = {{ weather_list | tojson }};
+
+        // 各都市にマーカーを設置
+        weatherList.forEach(function(city) {
+            if (!city) return;
+
+            // ポップアップの中身を作成（HTML）
+            var popupContent = `
+                <div class="text-center">
+                    <h6 class="fw-bold">${city.name}</h6>
+                    <div style="font-size: 2em;">${city.current_icon}</div>
+                    <div class="fw-bold text-primary">${city.current_temp}°C</div>
+                    <hr style="margin: 5px 0;">
+                    <small>最高: ${city.today_max}° / 最低: ${city.today_min}°</small><br>
+                    <small>降水確率: ${city.rain_prob}%</small><br>
+                    <small>明日: ${city.tomorrow_icon}</small>
+                </div>
+            `;
+
+            // マーカーを追加
+            L.marker([city.lat, city.lon])
+                .addTo(map)
+                .bindPopup(popupContent);
+        });
+    });
+</script>
 {% endblock %}
