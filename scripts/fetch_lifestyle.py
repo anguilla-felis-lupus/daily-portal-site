@@ -35,8 +35,8 @@ def get_weather_for_location(lat, lon, name):
         "timezone": "auto"
     }
     
-    # ★修正: 最大3回までリトライする処理を追加
-    max_retries = 3
+    # ★修正: 最大5回までリトライする処理を追加
+    max_retries = 5
     for i in range(max_retries):
         try:
             # タイムアウトを20秒に延長
@@ -80,7 +80,7 @@ def get_weather_for_location(lat, lon, name):
         # エラーだった場合、少し待ってから再挑戦
         time.sleep(2)
 
-    print(f"❌ {name}: 3回試しましたが取得できませんでした。")
+    print(f"❌ {name}: 5回試しましたが取得できませんでした。")
     return None
 
 def get_fortune():
@@ -127,7 +127,7 @@ def get_lifestyle_data():
             weather_list.append(data)
         
         # ★修正: 待機時間を0.5秒→1.0秒に延長してAPIに優しくする
-        time.sleep(1.5)
+        time.sleep(2.0)
 
     print(f"✅ 天気取得完了: {len(weather_list)}/{len(CITIES)} 成功")
 
