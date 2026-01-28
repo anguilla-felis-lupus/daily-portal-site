@@ -9,35 +9,38 @@
         </div>
         
         {% for anime in anime_list %}
-        <div class="card mb-3 shadow-sm border-0 h-100">
-            <div class="row g-0">
+        <div class="card mb-3 shadow-sm border-0">
+            <div class="row g-0 align-items-start">
                 <div class="col-4 col-sm-3">
-                    <img src="{{ anime.image }}" class="img-fluid rounded-start h-100" alt="{{ anime.title }}" style="object-fit: cover; min-height: 150px;">
+                    <div style="width: 100%; height: 100%; min-height: 160px; background-color: #f0f0f0;">
+                        <img src="{{ anime.image }}" class="img-fluid rounded-start" alt="{{ anime.title }}" 
+                             style="width: 100%; height: 100%; object-fit: cover; min-height: 160px;">
+                    </div>
                 </div>
                 <div class="col-8 col-sm-9">
                     <div class="card-body py-2">
                         <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title fw-bold mb-1">
+                            <h5 class="card-title fw-bold mb-1" style="font-size: 1.1rem;">
                                 <a href="{{ anime.url }}" target="_blank" class="text-decoration-none text-dark stretched-link">
                                     {{ anime.title }}
                                 </a>
                             </h5>
                             {% if anime.score != '-' %}
-                            <span class="badge bg-warning text-dark">★ {{ anime.score }}</span>
+                            <span class="badge bg-warning text-dark ms-1">★{{ anime.score }}</span>
                             {% endif %}
                         </div>
                         
                         <div class="mb-2">
                             {% for genre in anime.genres %}
-                            <span class="badge bg-light text-secondary border">{{ genre }}</span>
+                            <span class="badge bg-light text-secondary border me-1" style="font-weight: normal;">{{ genre }}</span>
                             {% endfor %}
                         </div>
 
-                        <p class="card-text small text-muted mb-2">
+                        <p class="card-text small text-muted mb-2" style="line-height: 1.4;">
                             {{ anime.synopsis }}
                         </p>
                         
-                        <p class="card-text"><small class="text-muted">全{{ anime.episodes }}話 | 原作: {{ anime.source }}</small></p>
+                        <p class="card-text mb-0"><small class="text-muted">全{{ anime.episodes }}話 | 原作: {{ anime.source }}</small></p>
                     </div>
                 </div>
             </div>
@@ -54,36 +57,39 @@
         </div>
 
         {% for manga in manga_list %}
-        <div class="card mb-3 shadow-sm border-0 h-100">
-            <div class="row g-0">
+        <div class="card mb-3 shadow-sm border-0">
+            <div class="row g-0 align-items-start">
                 <div class="col-4 col-sm-3">
-                    <img src="{{ manga.image }}" class="img-fluid rounded-start h-100" alt="{{ manga.title }}" style="object-fit: cover; min-height: 150px;">
+                    <div style="width: 100%; height: 100%; min-height: 160px; background-color: #f0f0f0;">
+                        <img src="{{ manga.image }}" class="img-fluid rounded-start" alt="{{ manga.title }}" 
+                             style="width: 100%; height: 100%; object-fit: cover; min-height: 160px;">
+                    </div>
                 </div>
                 <div class="col-8 col-sm-9">
                     <div class="card-body py-2">
                         <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title fw-bold mb-1">
+                            <h5 class="card-title fw-bold mb-1" style="font-size: 1.1rem;">
                                 <span class="badge bg-success me-1">#{{ manga.rank }}</span>
                                 <a href="{{ manga.url }}" target="_blank" class="text-decoration-none text-dark stretched-link">
                                     {{ manga.title }}
                                 </a>
                             </h5>
                             {% if manga.score != '-' %}
-                            <span class="badge bg-warning text-dark">★ {{ manga.score }}</span>
+                            <span class="badge bg-warning text-dark ms-1">★{{ manga.score }}</span>
                             {% endif %}
                         </div>
 
                         <div class="mb-2">
                             {% for genre in manga.genres %}
-                            <span class="badge bg-light text-secondary border">{{ genre }}</span>
+                            <span class="badge bg-light text-secondary border me-1" style="font-weight: normal;">{{ genre }}</span>
                             {% endfor %}
                         </div>
 
-                        <p class="card-text small text-muted mb-2">
+                        <p class="card-text small text-muted mb-2" style="line-height: 1.4;">
                             {{ manga.synopsis }}
                         </p>
                         
-                        <p class="card-text"><small class="text-muted">状態: {{ manga.status }}</small></p>
+                        <p class="card-text mb-0"><small class="text-muted">状態: {{ manga.status }}</small></p>
                     </div>
                 </div>
             </div>
