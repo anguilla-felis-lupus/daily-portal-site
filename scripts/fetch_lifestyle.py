@@ -22,14 +22,13 @@ CITIES = [
 # ----------------------------------------
 
 def get_weather_for_location(lat, lon, name):
-    """指定された座標の天気を取得する"""
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": lat,
         "longitude": lon,
         "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         "current": "temperature_2m,weather_code",
-        "timezone": "auto" # 現地の時間帯に合わせる
+        "timezone": "auto"
     }
     
     try:
@@ -55,11 +54,9 @@ def get_weather_for_location(lat, lon, name):
             "lon": lon,
             "current_temp": current.get("temperature_2m"),
             "current_icon": get_icon(current.get("weather_code", 0)),
-            # 今日
             "today_max": daily.get("temperature_2m_max", [0])[0],
             "today_min": daily.get("temperature_2m_min", [0])[0],
             "rain_prob": daily.get("precipitation_probability_max", [0])[0],
-            # 明日
             "tomorrow_icon": get_icon(daily.get("weather_code", [0,0])[1]),
             "tomorrow_max": daily.get("temperature_2m_max", [0])[1],
             "tomorrow_min": daily.get("temperature_2m_min", [0])[1],
@@ -74,13 +71,19 @@ def get_fortune():
         return []
 
     genai.configure(api_key=api_key)
-    # 動作確認済みのモデルを使用
     model = genai.GenerativeModel('gemini-2.5-flash-lite')
     
+    # ★修正: 出力フォーマットを厳格に指定（ここが重要）
     prompt = """
     今日の「12星座占いランキング」をJSON形式で作成してください。
     運勢の良い順（1位〜12位）に並べてください。
-    出力キー: rank, sign, item, comment
+    
+    【重要】以下のJSONフォーマット(キー名)を必ず守ってください:
+    [
+        {"rank": 1, "sign": "おひつじ座", "item": "赤いハンカチ", "comment": "最高の一日！"},
+        {"rank": 2, "sign": "おうし座", "item": "コーヒー", "comment": "落ち着いて行動を"}
+    ]
+    ※ rank, sign, item, comment の4つのキーを必ず含めてください。
     """
     
     try:
@@ -104,12 +107,10 @@ def get_lifestyle_data():
         data = get_weather_for_location(city["lat"], city["lon"], city["name"])
         if data:
             weather_list.append(data)
-        time.sleep(0.5) # サーバー負荷軽減のため少し待つ
+        time.sleep(0.5)
 
     return {
-        # weather: 互換性のためリストの先頭（東京）を入れる
         "weather": weather_list[0] if weather_list else None,
-        # weather_list: 全都市のデータ（地図用）
         "weather_list": weather_list,
         "fortune": get_fortune()
     }
