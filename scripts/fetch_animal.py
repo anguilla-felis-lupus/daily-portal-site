@@ -40,7 +40,7 @@ def generate_single_column(theme_category):
     # model = genai.GenerativeModel('gemini-pro')
     # ★修正箇所: 正式バージョン名 'gemini-1.5-flash-001' を指定
     model = genai.GenerativeModel(
-        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash',
         generation_config={"response_mime_type": "application/json"}
     )
 
