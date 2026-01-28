@@ -11,7 +11,7 @@ import fetch_market
 import fetch_animal
 import fetch_entertainment
 import fetch_lifestyle
-import fetch_nasa # ★追加
+import fetch_nasa
 
 # 出力先の基本設定
 OUTPUT_DIR = "." 
@@ -39,7 +39,7 @@ def main():
     if date_str not in archive_dates:
         archive_dates.insert(0, date_str)
 
-    # 3. データの収集（各ステップの間に30秒の休憩を入れます）
+    # 3. データの収集
     
     # --- [TOP / AIニュース] ---
     print("📰 ニュースデータ取得中...")
@@ -48,16 +48,20 @@ def main():
         if isinstance(news_result, dict):
             news_column = news_result.get('column', '')
             news_articles = news_result.get('articles', [])
+            # ★追加: ワードクラウド画像ファイル名を取得
+            news_wordcloud = news_result.get('wordcloud', None) 
         else:
             news_column = news_result
             news_articles = []
+            news_wordcloud = None
     except Exception as e:
         print(f"ニュース取得エラー: {e}")
         news_column = "取得エラー"
         news_articles = []
+        news_wordcloud = None
     
     print("☕ 30秒休憩中...(API制限を確実に回避)")
-    time.sleep(30) # ★30秒休憩
+    time.sleep(30)
 
     # --- [Market / 株価] ---
     print("📈 株価データ取得中...")
@@ -68,7 +72,7 @@ def main():
         market_data = {"summary": "取得エラー", "data": {}}
 
     print("☕ 30秒休憩中...(API制限を確実に回避)")
-    time.sleep(30) # ★30秒休憩
+    time.sleep(30)
 
     # --- [Animal / 動物] ---
     print("🦁 動物コラム生成中...")
@@ -79,20 +83,19 @@ def main():
         animal_data = {"columns": []}
     
     print("☕ 30秒休憩中...(API制限を確実に回避)")
-    time.sleep(30) # ★30秒休憩
+    time.sleep(30)
 
-    # --- [NASA / 宇宙] --- ★追加
+    # --- [NASA / 宇宙] ---
     print("🚀 NASAデータを取得中...")
     try:
         nasa_data = fetch_nasa.get_nasa_data()
-        # 動物データにNASAデータを合体させる
         if animal_data:
             animal_data['nasa'] = nasa_data
     except Exception as e:
         print(f"NASA取得エラー: {e}")
     
     print("☕ 30秒休憩中...(API制限を確実に回避)")
-    time.sleep(30) # ★30秒休憩
+    time.sleep(30)
     
     # --- [Entertainment / エンタメ] ---
     print("📚 エンタメデータ取得中...")
@@ -111,7 +114,6 @@ def main():
         lifestyle_data = fetch_lifestyle.get_lifestyle_data()
     except Exception as e:
         print(f"生活情報取得エラー: {e}")
-        # ★修正: エラー時でも weather_list を空で用意しておく
         lifestyle_data = {"weather": None, "fortune": [], "weather_list": []}
 
 
@@ -125,7 +127,8 @@ def main():
     }
 
     pages = [
-        ("index.html", "AI News", "index", {"column": news_column, "article_list": news_articles}),
+        # ★修正: wordcloud をテンプレートに渡す
+        ("index.html", "AI News", "index", {"column": news_column, "article_list": news_articles, "wordcloud": news_wordcloud}),
         ("market.html", "Market", "market", market_data),
         ("animal.html", "Animal", "animal", animal_data),
         ("entertainment.html", "Entertainment", "entertainment", {"manga_list": ent_data['manga'], "anime_list": ent_data['anime']}),
@@ -152,6 +155,14 @@ def main():
     os.makedirs(today_archive_dir, exist_ok=True)
 
     print(f"📂 本日のアーカイブを作成中: {today_archive_dir}")
+
+    # ★追加: ワードクラウド画像があれば、アーカイブフォルダにもコピーする
+    if news_wordcloud and os.path.exists(news_wordcloud):
+        try:
+            shutil.copy(news_wordcloud, os.path.join(today_archive_dir, news_wordcloud))
+            print("✅ ワードクラウド画像をアーカイブに保存しました")
+        except Exception as e:
+            print(f"画像コピーエラー: {e}")
 
     # (B) アーカイブ版の生成
     common_context["is_archive"] = True
