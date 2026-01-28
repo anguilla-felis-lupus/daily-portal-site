@@ -13,7 +13,7 @@ def translate_data(data_dict):
     print("🤖 AIによる翻訳・要約を実行中...")
     genai.configure(api_key=api_key)
     # 動作確認済みの軽量モデル
-    model = genai.GenerativeModel('gemini-2.5-flash-lite')
+    model = genai.GenerativeModel('gemini-2.5-flash')
 
     # AIへの指示（データ構造を保ったまま翻訳させる）
     prompt = f"""
