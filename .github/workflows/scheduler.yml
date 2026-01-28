@@ -41,6 +41,7 @@ jobs:
           # archivesフォルダ（過去ログ）と、ルートの最新htmlをステージング
           git add archives/
           git add *.html
+          git add *.png
           
           # 変更がある場合のみコミット＆プッシュ
           if git diff --staged --quiet; then
@@ -57,6 +58,7 @@ jobs:
           mkdir public
           # htmlファイルとarchivesフォルダを公開用フォルダに移動/コピー
           cp *.html public/
+          cp *.png public/
           cp -r archives public/
 
       - name: GitHub Pagesへデプロイ
