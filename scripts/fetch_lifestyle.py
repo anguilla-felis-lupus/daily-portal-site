@@ -2,19 +2,30 @@ import requests
 import google.generativeai as genai
 import os
 import json
+import time
 
-LAT = 35.6812
-LON = 139.7671
+# --- 設定: 天気を取得したい都市のリスト ---
+CITIES = [
+    {"name": "東京", "lat": 35.6812, "lon": 139.7671},
+    {"name": "大阪", "lat": 34.6937, "lon": 135.5023},
+    {"name": "札幌", "lat": 43.0618, "lon": 141.3545},
+    {"name": "ニューヨーク", "lat": 40.7128, "lon": -74.0060},
+    {"name": "ロンドン", "lat": 51.5074, "lon": -0.1278},
+    {"name": "パリ", "lat": 48.8566, "lon": 2.3522},
+    {"name": "シドニー", "lat": -33.8688, "lon": 151.2093},
+    {"name": "シンガポール", "lat": 1.3521, "lon": 103.8198}
+]
+# ----------------------------------------
 
-def get_weather():
-    # ★修正箇所1: URLの[]()を削除して、純粋なURL文字列にする
+def get_weather_for_location(lat, lon, name):
+    """指定された座標の天気を取得する"""
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "latitude": LAT,
-        "longitude": LON,
+        "latitude": lat,
+        "longitude": lon,
         "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         "current": "temperature_2m,weather_code",
-        "timezone": "Asia/Tokyo"
+        "timezone": "auto" # 現地の時間帯に合わせる
     }
     
     try:
@@ -35,17 +46,22 @@ def get_weather():
         daily = data.get("daily", {})
         
         return {
+            "name": name,
+            "lat": lat,
+            "lon": lon,
             "current_temp": current.get("temperature_2m"),
             "current_icon": get_icon(current.get("weather_code", 0)),
+            # 今日
             "today_max": daily.get("temperature_2m_max", [0])[0],
             "today_min": daily.get("temperature_2m_min", [0])[0],
             "rain_prob": daily.get("precipitation_probability_max", [0])[0],
+            # 明日
             "tomorrow_icon": get_icon(daily.get("weather_code", [0,0])[1]),
             "tomorrow_max": daily.get("temperature_2m_max", [0])[1],
             "tomorrow_min": daily.get("temperature_2m_min", [0])[1],
         }
     except Exception as e:
-        print(f"天気取得エラー: {e}")
+        print(f"天気取得エラー ({name}): {e}")
         return None
 
 def get_fortune():
@@ -54,12 +70,8 @@ def get_fortune():
         return []
 
     genai.configure(api_key=api_key)
-    # model = genai.GenerativeModel('gemini-pro')
-    # ★修正箇所2: 正式バージョン名 'gemini-1.5-flash-001' を指定
-    model = genai.GenerativeModel(
-        'gemini-2.5-flash-lite',
-        generation_config={"response_mime_type": "application/json"}
-    )
+    # 動作確認済みのモデルを使用
+    model = genai.GenerativeModel('gemini-2.5-flash-lite')
     
     prompt = """
     今日の「12星座占いランキング」をJSON形式で作成してください。
@@ -81,9 +93,20 @@ def get_fortune():
         return []
 
 def get_lifestyle_data():
-    print("☀️ 天気と占いを生成中...")
+    print("☀️ 世界の天気と占いを生成中...")
+    
+    weather_list = []
+    for city in CITIES:
+        data = get_weather_for_location(city["lat"], city["lon"], city["name"])
+        if data:
+            weather_list.append(data)
+        time.sleep(0.5) # サーバー負荷軽減のため少し待つ
+
     return {
-        "weather": get_weather(),
+        # weather: 互換性のためリストの先頭（東京）を入れる
+        "weather": weather_list[0] if weather_list else None,
+        # weather_list: 全都市のデータ（地図用）
+        "weather_list": weather_list,
         "fortune": get_fortune()
     }
 
