@@ -2,49 +2,95 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 border-primary">
-            <div class="card-header bg-primary text-white fw-bold">
-                📺 今期のアニメ（人気順）
-            </div>
-            <ul class="list-group list-group-flush">
-                {% for anime in anime_list %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <span class="fw-bold">{{ anime.title }}</span>
-                        <br>
-                        <small class="text-muted">放送日: {{ anime.broadcast }}</small>
-                    </div>
-                    {% if anime.score %}
-                    <span class="badge bg-success rounded-pill">{{ anime.score }}</span>
-                    {% endif %}
-                </li>
-                {% else %}
-                <li class="list-group-item">データがありません</li>
-                {% endfor %}
-            </ul>
+    <div class="col-lg-6 mb-4">
+        <div class="d-flex align-items-center mb-3">
+            <span class="fs-2 me-2">📺</span>
+            <h3 class="fw-bold m-0 text-primary">今期アニメのトレンド</h3>
         </div>
+        
+        {% for anime in anime_list %}
+        <div class="card mb-3 shadow-sm border-0 h-100">
+            <div class="row g-0">
+                <div class="col-4 col-sm-3">
+                    <img src="{{ anime.image }}" class="img-fluid rounded-start h-100" alt="{{ anime.title }}" style="object-fit: cover; min-height: 150px;">
+                </div>
+                <div class="col-8 col-sm-9">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title fw-bold mb-1">
+                                <a href="{{ anime.url }}" target="_blank" class="text-decoration-none text-dark stretched-link">
+                                    {{ anime.title }}
+                                </a>
+                            </h5>
+                            {% if anime.score != '-' %}
+                            <span class="badge bg-warning text-dark">★ {{ anime.score }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-2">
+                            {% for genre in anime.genres %}
+                            <span class="badge bg-light text-secondary border">{{ genre }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <p class="card-text small text-muted mb-2">
+                            {{ anime.synopsis }}
+                        </p>
+                        
+                        <p class="card-text"><small class="text-muted">全{{ anime.episodes }}話 | 原作: {{ anime.source }}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">データが取得できませんでした。</div>
+        {% endfor %}
     </div>
 
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 border-success">
-            <div class="card-header bg-success text-white fw-bold">
-                📖 人気のマンガ・トレンド
-            </div>
-            <ul class="list-group list-group-flush">
-                {% for manga in manga_list %}
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h6 class="mb-1 fw-bold">{{ manga.title }}</h6>
-                    </div>
-                    <p class="mb-1 small text-muted">{{ manga.author }}</p>
-                    <small class="text-secondary">{{ manga.publisher }}</small>
-                </li>
-                {% else %}
-                <li class="list-group-item">データがありません</li>
-                {% endfor %}
-            </ul>
+    <div class="col-lg-6 mb-4">
+        <div class="d-flex align-items-center mb-3">
+            <span class="fs-2 me-2">📖</span>
+            <h3 class="fw-bold m-0 text-success">人気のマンガ・ランキング</h3>
         </div>
+
+        {% for manga in manga_list %}
+        <div class="card mb-3 shadow-sm border-0 h-100">
+            <div class="row g-0">
+                <div class="col-4 col-sm-3">
+                    <img src="{{ manga.image }}" class="img-fluid rounded-start h-100" alt="{{ manga.title }}" style="object-fit: cover; min-height: 150px;">
+                </div>
+                <div class="col-8 col-sm-9">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title fw-bold mb-1">
+                                <span class="badge bg-success me-1">#{{ manga.rank }}</span>
+                                <a href="{{ manga.url }}" target="_blank" class="text-decoration-none text-dark stretched-link">
+                                    {{ manga.title }}
+                                </a>
+                            </h5>
+                            {% if manga.score != '-' %}
+                            <span class="badge bg-warning text-dark">★ {{ manga.score }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-2">
+                            {% for genre in manga.genres %}
+                            <span class="badge bg-light text-secondary border">{{ genre }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <p class="card-text small text-muted mb-2">
+                            {{ manga.synopsis }}
+                        </p>
+                        
+                        <p class="card-text"><small class="text-muted">状態: {{ manga.status }}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">データが取得できませんでした。</div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
