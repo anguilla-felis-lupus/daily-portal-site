@@ -33,7 +33,7 @@ def get_nasa_data():
         if api_key:
             genai.configure(api_key=api_key)
             # 動作確認済みの軽量モデルを使用
-            model = genai.GenerativeModel('gemini-2.5-flash-lite')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
             以下のNASA「今日の宇宙写真」の解説を、日本の一般読者向けにわかりやすく翻訳・要約してください。
