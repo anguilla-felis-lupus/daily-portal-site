@@ -13,6 +13,26 @@
 </div>
 
 <div class="row">
+    {% if fg_index %}
+    <div class="col-12 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                <span>😨 Fear & Greed Index (市場心理)</span>
+                <span class="badge bg-light text-dark">{{ fg_index.rating }}</span>
+            </div>
+            <div class="card-body text-center" style="position: relative;">
+                <div style="max-height: 250px; position: relative; margin: 0 auto; width: 100%; max-width: 400px;">
+                    <canvas id="chart-fg"></canvas>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; text-align: center; margin-bottom: 20px;">
+                        <h1 class="display-4 fw-bold mb-0" id="fg-score-text">{{ fg_index.score }}</h1>
+                        <small class="text-muted">0(恐怖) ↔ 100(強欲)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {% for key, item in data.items() %}
     <div class="col-md-6 mb-4">
         <div class="card h-100">
@@ -31,46 +51,80 @@
 </div>
 
 <script>
-    // Pythonから渡されたデータをJavaScriptで使えるようにする
+    // --- 1. 市場データのグラフ ---
     const marketData = {{ data | tojson }};
 
-    // すべての銘柄についてループしてグラフを描く
     for (const [key, item] of Object.entries(marketData)) {
         const ctx = document.getElementById('chart-' + key).getContext('2d');
-        
-        // 線の色（上昇なら赤、下落なら青）
         const lineColor = item.color === 'red' ? 'rgba(255, 99, 132, 1)' : 'rgba(54, 162, 235, 1)';
         const bgColor = item.color === 'red' ? 'rgba(255, 99, 132, 0.1)' : 'rgba(54, 162, 235, 0.1)';
 
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: item.dates, // 横軸（日付）
+                labels: item.dates,
                 datasets: [{
                     label: item.name,
-                    data: item.prices, // 縦軸（価格）
+                    data: item.prices,
                     borderColor: lineColor,
                     backgroundColor: bgColor,
                     borderWidth: 2,
                     pointRadius: 1,
-                    fill: true, // 下側を塗りつぶす
-                    tension: 0.3 // 曲線をなめらかに
+                    fill: true,
+                    tension: 0.3
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false } // 凡例は消す
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: { display: true }, // 横軸表示
-                    y: { 
-                        display: true,
-                        beginAtZero: false // 0からではなく、価格の範囲に合わせて拡大
-                    }
+                    x: { display: true },
+                    y: { display: true, beginAtZero: false }
                 }
             }
         });
     }
+
+    // --- 2. 恐怖指数のメーター (もしデータがあれば) ---
+    {% if fg_index %}
+    const fgCtx = document.getElementById('chart-fg').getContext('2d');
+    const score = {{ fg_index.score }};
+    
+    // スコアに応じた色決定
+    let meterColor = '#ffc107'; // 黄 (Neutral)
+    if (score < 25) meterColor = '#dc3545'; // 赤 (Extreme Fear)
+    else if (score < 45) meterColor = '#fd7e14'; // オレンジ (Fear)
+    else if (score > 75) meterColor = '#198754'; // 緑 (Extreme Greed)
+    else if (score > 55) meterColor = '#20c997'; // 青緑 (Greed)
+
+    new Chart(fgCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Score', 'Remaining'],
+            datasets: [{
+                data: [score, 100 - score],
+                backgroundColor: [
+                    meterColor,
+                    '#e9ecef' // グレー背景
+                ],
+                borderWidth: 0,
+                cutout: '85%', // ドーナツの太さ
+            }]
+        },
+        options: {
+            responsive: true,
+            rotation: -90,      // 左から開始
+            circumference: 180, // 半円にする
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+    {% endif %}
 </script>
 {% endblock %}
