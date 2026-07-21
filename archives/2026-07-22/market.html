@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animal - Daily Portal</title>
+    <title>Market - Daily Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; padding-top: 20px; transition: background-color 0.3s, color 0.3s; }
@@ -50,10 +50,10 @@
                         <a class="nav-link " href="index.html">🏠 AIニュース</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="market.html">📈 株価・経済</a>
+                        <a class="nav-link active" href="market.html">📈 株価・経済</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="animal.html">🦁 動物コラム</a>
+                        <a class="nav-link " href="animal.html">🦁 動物コラム</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " href="entertainment.html">📚 エンタメ</a>
@@ -65,73 +65,188 @@
 
                 <div class="content">
                     
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
-<div class="card mb-5 border-0 shadow-sm" style="background-color: #000; color: #fff;">
-    <div class="card-header bg-transparent border-secondary text-center">
-        <span class="badge bg-primary mb-2">NASA APOD</span><br>
-        <h4 class="fw-bold" style="letter-spacing: 2px;">今日の宇宙写真</h4>
+<div class="card mb-4 border-success">
+    <div class="card-header bg-success text-white fw-bold">
+        💰 今日の市況コメント
     </div>
-    
-    
-    <img src="https://apod.nasa.gov/apod/image/2607/TurtleRock_Curiosity_1080.jpg" class="card-img-top" alt="火星の「亀岩」の謎" style="max-height: 500px; object-fit: contain; background-color: #000;">
-    
-    
-
     <div class="card-body">
-        <h5 class="card-title fw-bold text-warning">火星の「亀岩」の謎</h5>
-        <p class="card-text mt-3" style="line-height: 1.8; font-size: 0.95em;">
-            火星にカメの化石が！？ いいえ、これは自然が作り出した壮大なアートです。NASAの探査車キュリオシティが火星探査4922日目に発見した、まるで巨大な亀のような岩（ミラフローレスと命名）。推定15メートルもの大きさで、周囲の岩よりも浸食に強かったため、独特の姿で残りました。頂上は火星の砂で覆われ、その下には風で運ばれた砂が積み重なり、地下水で固まった層が見えます。地球にも似た地形があり、火星の太古の歴史や生命の痕跡を探るキュリオシティの探査は続きます。
-        </p>
-        <div class="text-end">
-            <small class="text-secondary">Source: NASA Astronomy Picture of the Day</small>
+        <p class="card-text">今日の市況概況：日経平均は大幅続落。一方、米S&P500は上昇し、ドル円は円安傾向。金先物、ビットコインも堅調。Fear & Greed Indexは「41.0（恐怖）」と、市場は依然として「弱気」ムード。投資家は慎重な姿勢を維持すべき局面と言えそうです。</p>
+    </div>
+</div>
+
+<div class="row">
+    
+    <div class="col-12 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                <span>😨 Fear & Greed Index (市場心理)</span>
+                <span class="badge bg-light text-dark">fear</span>
+            </div>
+            <div class="card-body text-center" style="position: relative;">
+                <div style="max-height: 250px; position: relative; margin: 0 auto; width: 100%; max-width: 400px;">
+                    <canvas id="chart-fg"></canvas>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; text-align: center; margin-bottom: 20px;">
+                        <h1 class="display-4 fw-bold mb-0" id="fg-score-text">41.0</h1>
+                        <small class="text-muted">0(恐怖) ↔ 100(強欲)</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    
+
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">日経平均</span>
+                <span class="badge bg-secondary">
+                    64,141.12 (-2,694.42)
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-nikkei"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">米国S&P500</span>
+                <span class="badge bg-danger">
+                    7,509.20 (+65.92)
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-sp500"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">ドル円</span>
+                <span class="badge bg-danger">
+                    163.21 (+0.72)
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-usdjpy"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">金先物</span>
+                <span class="badge bg-danger">
+                    4,084.60 (+74.30)
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-gold"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">ビットコイン</span>
+                <span class="badge bg-danger">
+                    10,805,947.00 (+206,677.00)
+                </span>
+            </div>
+            <div class="card-body">
+                <canvas id="chart-btc"></canvas>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
+<script>
+    // --- 1. 市場データのグラフ ---
+    const marketData = {"btc": {"color": "red", "current": "10,805,947.00", "dates": ["06/21", "06/22", "06/23", "06/24", "06/25", "06/26", "06/27", "06/28", "06/29", "06/30", "07/01", "07/02", "07/03", "07/04", "07/05", "07/06", "07/07", "07/08", "07/09", "07/10", "07/11", "07/12", "07/13", "07/14", "07/15", "07/16", "07/17", "07/18", "07/19", "07/20", "07/21"], "diff": "+206,677.00", "name": "\u30d3\u30c3\u30c8\u30b3\u30a4\u30f3", "prices": [10208979.0, 10332842.0, 10127220.0, 9867198.0, 9663385.0, 9705802.0, 9695617.0, 9631981.0, 9737871.0, 9523716.0, 9753421.0, 9927293.0, 10093448.0, 10180245.0, 10260441.0, 10373304.0, 10277282.0, 10119209.0, 10260486.0, 10368304.0, 10314555.0, 10321595.0, 10109065.0, 10535557.0, 10488253.0, 10358352.0, 10380851.0, 10525949.0, 10513582.0, 10599270.0, 10805947.0]}, "gold": {"color": "red", "current": "4,084.60", "dates": ["06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/17", "07/20", "07/21"], "diff": "+74.30", "name": "\u91d1\u5148\u7269", "prices": [4181.89990234375, 4129.89990234375, 3990.300048828125, 4030.5, 4078.699951171875, 4022.300048828125, 4022.89990234375, 4068.300048828125, 4112.7001953125, 4155.10009765625, 4145.2998046875, 4070.89990234375, 4130.60009765625, 4104.10009765625, 3997.0, 4061.10009765625, 4044.0, 3985.60009765625, 4012.699951171875, 4010.300048828125, 4084.60009765625]}, "nikkei": {"color": "blue", "current": "64,141.12", "dates": ["06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/03", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/17"], "diff": "-2,694.42", "name": "\u65e5\u7d4c\u5e73\u5747", "prices": [72353.9609375, 69788.3828125, 69174.96875, 72366.34375, 69360.8828125, 69468.109375, 70062.3203125, 70474.9609375, 68733.1484375, 69744.0703125, 69737.6875, 68256.9609375, 66819.046875, 67743.8515625, 68557.7265625, 67242.7265625, 67743.5, 68751.5078125, 66835.5390625, 64141.12109375]}, "sp500": {"color": "red", "current": "7,509.20", "dates": ["06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/17", "07/20", "07/21"], "diff": "+65.92", "name": "\u7c73\u56fdS\u0026P500", "prices": [7472.7900390625, 7365.4599609375, 7358.22021484375, 7357.490234375, 7354.02001953125, 7440.43017578125, 7499.35986328125, 7483.22998046875, 7483.240234375, 7537.43017578125, 7503.85009765625, 7482.7099609375, 7543.64013671875, 7575.39013671875, 7515.33984375, 7543.58984375, 7572.39990234375, 7533.77001953125, 7457.68994140625, 7443.27978515625, 7509.2001953125]}, "usdjpy": {"color": "red", "current": "163.21", "dates": ["06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/03", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/17", "07/20", "07/21", "07/22"], "diff": "+0.72", "name": "\u30c9\u30eb\u5186", "prices": [161.43299865722656, 161.57000732421875, 161.5989990234375, 161.76300048828125, 161.80499267578125, 161.78700256347656, 161.92300415039062, 162.6280059814453, 162.53900146484375, 161.44900512695312, 161.45199584960938, 162.08799743652344, 162.36300659179688, 162.53900146484375, 162.36300659179688, 161.8780059814453, 162.4290008544922, 162.18699645996094, 162.07200622558594, 162.37600708007812, 162.51199340820312, 162.48699951171875, 163.20799255371094]}};
 
-<h3 class="mb-4 text-center border-bottom pb-2">🦁 今日のどうぶつ豆知識（2選）</h3>
+    for (const [key, item] of Object.entries(marketData)) {
+        const ctx = document.getElementById('chart-' + key).getContext('2d');
+        const lineColor = item.color === 'red' ? 'rgba(255, 99, 132, 1)' : 'rgba(54, 162, 235, 1)';
+        const bgColor = item.color === 'red' ? 'rgba(255, 99, 132, 0.1)' : 'rgba(54, 162, 235, 0.1)';
 
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: item.dates,
+                datasets: [{
+                    label: item.name,
+                    data: item.prices,
+                    borderColor: lineColor,
+                    backgroundColor: bgColor,
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: true },
+                    y: { display: true, beginAtZero: false }
+                }
+            }
+        });
+    }
 
-<div class="card border-warning mb-5">
-    <div class="card-header bg-warning text-dark fw-bold">
-        No.1：ぴょんぴょんだけじゃない！アマミノクロウサギの秘密
-    </div>
+    // --- 2. 恐怖指数のメーター (もしデータがあれば) ---
     
+    const fgCtx = document.getElementById('chart-fg').getContext('2d');
+    const score = 41.0;
     
-    <img src="https://pixabay.com/get/g3f36da80d4e568b486486ead96475d8d55416775ca785356639eb26c682e5087e2b3e8175a23399d629015a4392f995c59bbad06f528401507ef7d6433efaae3_640.jpg" class="card-img-top" alt="アマミノクロウサギ" style="max-height: 400px; object-fit: cover;">
-    
-    
-    <div class="card-body">
-        <p class="card-text lead" style="line-height: 1.8;">
-            日本のはるか南、鹿児島県の奄美大島と徳之島にだけ住んでいる「アマミノクロウサギ」を知ってるかな？名前の通り、真っ黒い体に短い耳、そして太くてがっしりした足が特徴だよ。実はこのウサギさん、穴を掘るのがとっても得意で、夜になると地面に作った巣穴から出てきて活動するんだ。そして、一番びっくりするのは、太古の昔からほとんど姿を変えずに生き続けていることから、「生きた化石」とも呼ばれていること！日本の宝物のようなこのウサギさんは、残念ながら数が減っていて、今ではとても大切に守られている絶滅危惧種なんだ。もし奄美の森を訪れることがあったら、そっと見守ってあげてね。
-        </p>
-        
-        
-        <p class="text-muted text-end mt-3 small">Image by Pixabay</p>
-        
-    </div>
-</div>
+    // スコアに応じた色決定
+    let meterColor = '#ffc107'; // 黄 (Neutral)
+    if (score < 25) meterColor = '#dc3545'; // 赤 (Extreme Fear)
+    else if (score < 45) meterColor = '#fd7e14'; // オレンジ (Fear)
+    else if (score > 75) meterColor = '#198754'; // 緑 (Extreme Greed)
+    else if (score > 55) meterColor = '#20c997'; // 青緑 (Greed)
 
-<div class="card border-warning mb-5">
-    <div class="card-header bg-warning text-dark fw-bold">
-        No.2：びっくり！電気を出すお魚さん
-    </div>
+    new Chart(fgCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Score', 'Remaining'],
+            datasets: [{
+                data: [score, 100 - score],
+                backgroundColor: [
+                    meterColor,
+                    '#e9ecef' // グレー背景
+                ],
+                borderWidth: 0,
+                cutout: '85%', // ドーナツの太さ
+            }]
+        },
+        options: {
+            responsive: true,
+            rotation: -90,      // 左から開始
+            circumference: 180, // 半円にする
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
     
-    
-    
-    <div class="card-body">
-        <p class="card-text lead" style="line-height: 1.8;">
-            アマゾンの川に住む、ちょっと変わったお魚さんを知ってるかな？ その名も「デンキウナギ」！ 名前の通り、なんと体から電気をビリビリッと出すことができるんだ。電気の強さは最大で800ボルトにもなるんだって！これは、人間が使う家庭用コンセントの電気よりもずっと強いんだよ。昔は、デンキウナギが電気を出す様子を見て、人間が電気の仕組みを研究することもあったんだ。でも、どうしてデンキウナギは電気を出すんだろう？ それはね、敵が近づいてきたときに身を守ったり、暗くて濁った水の中でエサになる小魚を捕まえたりするためなんだ。電気は、デンキウナギがアマゾンの厳しい自然で生き抜くための、とっても大切な武器なんだね。すごいでしょう！
-        </p>
-        
-        
-        <p class="text-muted mt-3 small">※画像が見つかりませんでした。</p>
-        
-    </div>
-</div>
-
-
+</script>
 
                 </div>
             </div>
@@ -143,894 +258,898 @@
                     </div>
                     <div class="list-group list-group-flush archive-list">
                         
+                        <a href="../../index.html" class="list-group-item list-group-item-action fw-bold text-primary">
+                            🔙 最新の記事へ戻る
+                        </a>
+                        
 
                         
-                        <a href="archives/2026-07-22/index.html" 
+                        <a href="../2026-07-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-22
                         </a>
                         
-                        <a href="archives/2026-07-21/index.html" 
+                        <a href="../2026-07-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-21
                         </a>
                         
-                        <a href="archives/2026-07-20/index.html" 
+                        <a href="../2026-07-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-20
                         </a>
                         
-                        <a href="archives/2026-07-19/index.html" 
+                        <a href="../2026-07-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-19
                         </a>
                         
-                        <a href="archives/2026-07-18/index.html" 
+                        <a href="../2026-07-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-18
                         </a>
                         
-                        <a href="archives/2026-07-17/index.html" 
+                        <a href="../2026-07-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-17
                         </a>
                         
-                        <a href="archives/2026-07-16/index.html" 
+                        <a href="../2026-07-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-16
                         </a>
                         
-                        <a href="archives/2026-07-15/index.html" 
+                        <a href="../2026-07-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-15
                         </a>
                         
-                        <a href="archives/2026-07-14/index.html" 
+                        <a href="../2026-07-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-14
                         </a>
                         
-                        <a href="archives/2026-07-13/index.html" 
+                        <a href="../2026-07-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-13
                         </a>
                         
-                        <a href="archives/2026-07-12/index.html" 
+                        <a href="../2026-07-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-12
                         </a>
                         
-                        <a href="archives/2026-07-11/index.html" 
+                        <a href="../2026-07-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-11
                         </a>
                         
-                        <a href="archives/2026-07-10/index.html" 
+                        <a href="../2026-07-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-10
                         </a>
                         
-                        <a href="archives/2026-07-09/index.html" 
+                        <a href="../2026-07-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-09
                         </a>
                         
-                        <a href="archives/2026-07-08/index.html" 
+                        <a href="../2026-07-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-08
                         </a>
                         
-                        <a href="archives/2026-07-07/index.html" 
+                        <a href="../2026-07-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-07
                         </a>
                         
-                        <a href="archives/2026-07-06/index.html" 
+                        <a href="../2026-07-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-06
                         </a>
                         
-                        <a href="archives/2026-07-05/index.html" 
+                        <a href="../2026-07-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-05
                         </a>
                         
-                        <a href="archives/2026-07-04/index.html" 
+                        <a href="../2026-07-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-04
                         </a>
                         
-                        <a href="archives/2026-07-03/index.html" 
+                        <a href="../2026-07-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-03
                         </a>
                         
-                        <a href="archives/2026-07-02/index.html" 
+                        <a href="../2026-07-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-02
                         </a>
                         
-                        <a href="archives/2026-07-01/index.html" 
+                        <a href="../2026-07-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-07-01
                         </a>
                         
-                        <a href="archives/2026-06-30/index.html" 
+                        <a href="../2026-06-30/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-30
                         </a>
                         
-                        <a href="archives/2026-06-29/index.html" 
+                        <a href="../2026-06-29/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-29
                         </a>
                         
-                        <a href="archives/2026-06-28/index.html" 
+                        <a href="../2026-06-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-28
                         </a>
                         
-                        <a href="archives/2026-06-27/index.html" 
+                        <a href="../2026-06-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-27
                         </a>
                         
-                        <a href="archives/2026-06-26/index.html" 
+                        <a href="../2026-06-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-26
                         </a>
                         
-                        <a href="archives/2026-06-25/index.html" 
+                        <a href="../2026-06-25/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-25
                         </a>
                         
-                        <a href="archives/2026-06-24/index.html" 
+                        <a href="../2026-06-24/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-24
                         </a>
                         
-                        <a href="archives/2026-06-23/index.html" 
+                        <a href="../2026-06-23/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-23
                         </a>
                         
-                        <a href="archives/2026-06-22/index.html" 
+                        <a href="../2026-06-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-22
                         </a>
                         
-                        <a href="archives/2026-06-21/index.html" 
+                        <a href="../2026-06-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-21
                         </a>
                         
-                        <a href="archives/2026-06-20/index.html" 
+                        <a href="../2026-06-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-20
                         </a>
                         
-                        <a href="archives/2026-06-19/index.html" 
+                        <a href="../2026-06-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-19
                         </a>
                         
-                        <a href="archives/2026-06-18/index.html" 
+                        <a href="../2026-06-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-18
                         </a>
                         
-                        <a href="archives/2026-06-17/index.html" 
+                        <a href="../2026-06-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-17
                         </a>
                         
-                        <a href="archives/2026-06-16/index.html" 
+                        <a href="../2026-06-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-16
                         </a>
                         
-                        <a href="archives/2026-06-15/index.html" 
+                        <a href="../2026-06-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-15
                         </a>
                         
-                        <a href="archives/2026-06-14/index.html" 
+                        <a href="../2026-06-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-14
                         </a>
                         
-                        <a href="archives/2026-06-13/index.html" 
+                        <a href="../2026-06-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-13
                         </a>
                         
-                        <a href="archives/2026-06-12/index.html" 
+                        <a href="../2026-06-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-12
                         </a>
                         
-                        <a href="archives/2026-06-11/index.html" 
+                        <a href="../2026-06-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-11
                         </a>
                         
-                        <a href="archives/2026-06-10/index.html" 
+                        <a href="../2026-06-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-10
                         </a>
                         
-                        <a href="archives/2026-06-09/index.html" 
+                        <a href="../2026-06-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-09
                         </a>
                         
-                        <a href="archives/2026-06-08/index.html" 
+                        <a href="../2026-06-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-08
                         </a>
                         
-                        <a href="archives/2026-06-07/index.html" 
+                        <a href="../2026-06-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-07
                         </a>
                         
-                        <a href="archives/2026-06-06/index.html" 
+                        <a href="../2026-06-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-06
                         </a>
                         
-                        <a href="archives/2026-06-05/index.html" 
+                        <a href="../2026-06-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-05
                         </a>
                         
-                        <a href="archives/2026-06-04/index.html" 
+                        <a href="../2026-06-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-04
                         </a>
                         
-                        <a href="archives/2026-06-03/index.html" 
+                        <a href="../2026-06-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-03
                         </a>
                         
-                        <a href="archives/2026-06-02/index.html" 
+                        <a href="../2026-06-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-02
                         </a>
                         
-                        <a href="archives/2026-06-01/index.html" 
+                        <a href="../2026-06-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-06-01
                         </a>
                         
-                        <a href="archives/2026-05-31/index.html" 
+                        <a href="../2026-05-31/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-31
                         </a>
                         
-                        <a href="archives/2026-05-30/index.html" 
+                        <a href="../2026-05-30/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-30
                         </a>
                         
-                        <a href="archives/2026-05-29/index.html" 
+                        <a href="../2026-05-29/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-29
                         </a>
                         
-                        <a href="archives/2026-05-28/index.html" 
+                        <a href="../2026-05-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-28
                         </a>
                         
-                        <a href="archives/2026-05-27/index.html" 
+                        <a href="../2026-05-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-27
                         </a>
                         
-                        <a href="archives/2026-05-26/index.html" 
+                        <a href="../2026-05-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-26
                         </a>
                         
-                        <a href="archives/2026-05-25/index.html" 
+                        <a href="../2026-05-25/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-25
                         </a>
                         
-                        <a href="archives/2026-05-24/index.html" 
+                        <a href="../2026-05-24/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-24
                         </a>
                         
-                        <a href="archives/2026-05-23/index.html" 
+                        <a href="../2026-05-23/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-23
                         </a>
                         
-                        <a href="archives/2026-05-22/index.html" 
+                        <a href="../2026-05-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-22
                         </a>
                         
-                        <a href="archives/2026-05-21/index.html" 
+                        <a href="../2026-05-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-21
                         </a>
                         
-                        <a href="archives/2026-05-20/index.html" 
+                        <a href="../2026-05-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-20
                         </a>
                         
-                        <a href="archives/2026-05-19/index.html" 
+                        <a href="../2026-05-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-19
                         </a>
                         
-                        <a href="archives/2026-05-18/index.html" 
+                        <a href="../2026-05-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-18
                         </a>
                         
-                        <a href="archives/2026-05-17/index.html" 
+                        <a href="../2026-05-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-17
                         </a>
                         
-                        <a href="archives/2026-05-16/index.html" 
+                        <a href="../2026-05-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-16
                         </a>
                         
-                        <a href="archives/2026-05-15/index.html" 
+                        <a href="../2026-05-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-15
                         </a>
                         
-                        <a href="archives/2026-05-14/index.html" 
+                        <a href="../2026-05-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-14
                         </a>
                         
-                        <a href="archives/2026-05-13/index.html" 
+                        <a href="../2026-05-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-13
                         </a>
                         
-                        <a href="archives/2026-05-12/index.html" 
+                        <a href="../2026-05-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-12
                         </a>
                         
-                        <a href="archives/2026-05-11/index.html" 
+                        <a href="../2026-05-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-11
                         </a>
                         
-                        <a href="archives/2026-05-10/index.html" 
+                        <a href="../2026-05-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-10
                         </a>
                         
-                        <a href="archives/2026-05-09/index.html" 
+                        <a href="../2026-05-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-09
                         </a>
                         
-                        <a href="archives/2026-05-08/index.html" 
+                        <a href="../2026-05-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-08
                         </a>
                         
-                        <a href="archives/2026-05-07/index.html" 
+                        <a href="../2026-05-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-07
                         </a>
                         
-                        <a href="archives/2026-05-06/index.html" 
+                        <a href="../2026-05-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-06
                         </a>
                         
-                        <a href="archives/2026-05-05/index.html" 
+                        <a href="../2026-05-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-05
                         </a>
                         
-                        <a href="archives/2026-05-04/index.html" 
+                        <a href="../2026-05-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-04
                         </a>
                         
-                        <a href="archives/2026-05-03/index.html" 
+                        <a href="../2026-05-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-03
                         </a>
                         
-                        <a href="archives/2026-05-02/index.html" 
+                        <a href="../2026-05-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-02
                         </a>
                         
-                        <a href="archives/2026-05-01/index.html" 
+                        <a href="../2026-05-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-05-01
                         </a>
                         
-                        <a href="archives/2026-04-30/index.html" 
+                        <a href="../2026-04-30/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-30
                         </a>
                         
-                        <a href="archives/2026-04-29/index.html" 
+                        <a href="../2026-04-29/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-29
                         </a>
                         
-                        <a href="archives/2026-04-28/index.html" 
+                        <a href="../2026-04-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-28
                         </a>
                         
-                        <a href="archives/2026-04-27/index.html" 
+                        <a href="../2026-04-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-27
                         </a>
                         
-                        <a href="archives/2026-04-26/index.html" 
+                        <a href="../2026-04-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-26
                         </a>
                         
-                        <a href="archives/2026-04-25/index.html" 
+                        <a href="../2026-04-25/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-25
                         </a>
                         
-                        <a href="archives/2026-04-24/index.html" 
+                        <a href="../2026-04-24/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-24
                         </a>
                         
-                        <a href="archives/2026-04-23/index.html" 
+                        <a href="../2026-04-23/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-23
                         </a>
                         
-                        <a href="archives/2026-04-22/index.html" 
+                        <a href="../2026-04-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-22
                         </a>
                         
-                        <a href="archives/2026-04-21/index.html" 
+                        <a href="../2026-04-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-21
                         </a>
                         
-                        <a href="archives/2026-04-20/index.html" 
+                        <a href="../2026-04-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-20
                         </a>
                         
-                        <a href="archives/2026-04-19/index.html" 
+                        <a href="../2026-04-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-19
                         </a>
                         
-                        <a href="archives/2026-04-18/index.html" 
+                        <a href="../2026-04-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-18
                         </a>
                         
-                        <a href="archives/2026-04-17/index.html" 
+                        <a href="../2026-04-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-17
                         </a>
                         
-                        <a href="archives/2026-04-16/index.html" 
+                        <a href="../2026-04-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-16
                         </a>
                         
-                        <a href="archives/2026-04-15/index.html" 
+                        <a href="../2026-04-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-15
                         </a>
                         
-                        <a href="archives/2026-04-14/index.html" 
+                        <a href="../2026-04-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-14
                         </a>
                         
-                        <a href="archives/2026-04-13/index.html" 
+                        <a href="../2026-04-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-13
                         </a>
                         
-                        <a href="archives/2026-04-12/index.html" 
+                        <a href="../2026-04-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-12
                         </a>
                         
-                        <a href="archives/2026-04-11/index.html" 
+                        <a href="../2026-04-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-11
                         </a>
                         
-                        <a href="archives/2026-04-10/index.html" 
+                        <a href="../2026-04-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-10
                         </a>
                         
-                        <a href="archives/2026-04-09/index.html" 
+                        <a href="../2026-04-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-09
                         </a>
                         
-                        <a href="archives/2026-04-08/index.html" 
+                        <a href="../2026-04-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-08
                         </a>
                         
-                        <a href="archives/2026-04-07/index.html" 
+                        <a href="../2026-04-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-07
                         </a>
                         
-                        <a href="archives/2026-04-06/index.html" 
+                        <a href="../2026-04-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-06
                         </a>
                         
-                        <a href="archives/2026-04-05/index.html" 
+                        <a href="../2026-04-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-05
                         </a>
                         
-                        <a href="archives/2026-04-04/index.html" 
+                        <a href="../2026-04-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-04
                         </a>
                         
-                        <a href="archives/2026-04-03/index.html" 
+                        <a href="../2026-04-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-03
                         </a>
                         
-                        <a href="archives/2026-04-02/index.html" 
+                        <a href="../2026-04-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-02
                         </a>
                         
-                        <a href="archives/2026-04-01/index.html" 
+                        <a href="../2026-04-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-04-01
                         </a>
                         
-                        <a href="archives/2026-03-31/index.html" 
+                        <a href="../2026-03-31/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-31
                         </a>
                         
-                        <a href="archives/2026-03-30/index.html" 
+                        <a href="../2026-03-30/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-30
                         </a>
                         
-                        <a href="archives/2026-03-29/index.html" 
+                        <a href="../2026-03-29/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-29
                         </a>
                         
-                        <a href="archives/2026-03-28/index.html" 
+                        <a href="../2026-03-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-28
                         </a>
                         
-                        <a href="archives/2026-03-27/index.html" 
+                        <a href="../2026-03-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-27
                         </a>
                         
-                        <a href="archives/2026-03-26/index.html" 
+                        <a href="../2026-03-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-26
                         </a>
                         
-                        <a href="archives/2026-03-25/index.html" 
+                        <a href="../2026-03-25/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-25
                         </a>
                         
-                        <a href="archives/2026-03-24/index.html" 
+                        <a href="../2026-03-24/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-24
                         </a>
                         
-                        <a href="archives/2026-03-23/index.html" 
+                        <a href="../2026-03-23/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-23
                         </a>
                         
-                        <a href="archives/2026-03-22/index.html" 
+                        <a href="../2026-03-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-22
                         </a>
                         
-                        <a href="archives/2026-03-21/index.html" 
+                        <a href="../2026-03-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-21
                         </a>
                         
-                        <a href="archives/2026-03-20/index.html" 
+                        <a href="../2026-03-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-20
                         </a>
                         
-                        <a href="archives/2026-03-19/index.html" 
+                        <a href="../2026-03-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-19
                         </a>
                         
-                        <a href="archives/2026-03-18/index.html" 
+                        <a href="../2026-03-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-18
                         </a>
                         
-                        <a href="archives/2026-03-17/index.html" 
+                        <a href="../2026-03-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-17
                         </a>
                         
-                        <a href="archives/2026-03-16/index.html" 
+                        <a href="../2026-03-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-16
                         </a>
                         
-                        <a href="archives/2026-03-15/index.html" 
+                        <a href="../2026-03-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-15
                         </a>
                         
-                        <a href="archives/2026-03-14/index.html" 
+                        <a href="../2026-03-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-14
                         </a>
                         
-                        <a href="archives/2026-03-13/index.html" 
+                        <a href="../2026-03-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-13
                         </a>
                         
-                        <a href="archives/2026-03-12/index.html" 
+                        <a href="../2026-03-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-12
                         </a>
                         
-                        <a href="archives/2026-03-11/index.html" 
+                        <a href="../2026-03-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-11
                         </a>
                         
-                        <a href="archives/2026-03-10/index.html" 
+                        <a href="../2026-03-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-10
                         </a>
                         
-                        <a href="archives/2026-03-09/index.html" 
+                        <a href="../2026-03-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-09
                         </a>
                         
-                        <a href="archives/2026-03-08/index.html" 
+                        <a href="../2026-03-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-08
                         </a>
                         
-                        <a href="archives/2026-03-07/index.html" 
+                        <a href="../2026-03-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-07
                         </a>
                         
-                        <a href="archives/2026-03-06/index.html" 
+                        <a href="../2026-03-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-06
                         </a>
                         
-                        <a href="archives/2026-03-05/index.html" 
+                        <a href="../2026-03-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-05
                         </a>
                         
-                        <a href="archives/2026-03-04/index.html" 
+                        <a href="../2026-03-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-04
                         </a>
                         
-                        <a href="archives/2026-03-03/index.html" 
+                        <a href="../2026-03-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-03
                         </a>
                         
-                        <a href="archives/2026-03-02/index.html" 
+                        <a href="../2026-03-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-02
                         </a>
                         
-                        <a href="archives/2026-03-01/index.html" 
+                        <a href="../2026-03-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-03-01
                         </a>
                         
-                        <a href="archives/2026-02-28/index.html" 
+                        <a href="../2026-02-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-28
                         </a>
                         
-                        <a href="archives/2026-02-27/index.html" 
+                        <a href="../2026-02-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-27
                         </a>
                         
-                        <a href="archives/2026-02-26/index.html" 
+                        <a href="../2026-02-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-26
                         </a>
                         
-                        <a href="archives/2026-02-25/index.html" 
+                        <a href="../2026-02-25/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-25
                         </a>
                         
-                        <a href="archives/2026-02-24/index.html" 
+                        <a href="../2026-02-24/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-24
                         </a>
                         
-                        <a href="archives/2026-02-23/index.html" 
+                        <a href="../2026-02-23/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-23
                         </a>
                         
-                        <a href="archives/2026-02-22/index.html" 
+                        <a href="../2026-02-22/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-22
                         </a>
                         
-                        <a href="archives/2026-02-21/index.html" 
+                        <a href="../2026-02-21/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-21
                         </a>
                         
-                        <a href="archives/2026-02-20/index.html" 
+                        <a href="../2026-02-20/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-20
                         </a>
                         
-                        <a href="archives/2026-02-19/index.html" 
+                        <a href="../2026-02-19/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-19
                         </a>
                         
-                        <a href="archives/2026-02-18/index.html" 
+                        <a href="../2026-02-18/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-18
                         </a>
                         
-                        <a href="archives/2026-02-17/index.html" 
+                        <a href="../2026-02-17/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-17
                         </a>
                         
-                        <a href="archives/2026-02-16/index.html" 
+                        <a href="../2026-02-16/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-16
                         </a>
                         
-                        <a href="archives/2026-02-15/index.html" 
+                        <a href="../2026-02-15/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-15
                         </a>
                         
-                        <a href="archives/2026-02-14/index.html" 
+                        <a href="../2026-02-14/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-14
                         </a>
                         
-                        <a href="archives/2026-02-13/index.html" 
+                        <a href="../2026-02-13/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-13
                         </a>
                         
-                        <a href="archives/2026-02-12/index.html" 
+                        <a href="../2026-02-12/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-12
                         </a>
                         
-                        <a href="archives/2026-02-11/index.html" 
+                        <a href="../2026-02-11/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-11
                         </a>
                         
-                        <a href="archives/2026-02-10/index.html" 
+                        <a href="../2026-02-10/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-10
                         </a>
                         
-                        <a href="archives/2026-02-09/index.html" 
+                        <a href="../2026-02-09/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-09
                         </a>
                         
-                        <a href="archives/2026-02-08/index.html" 
+                        <a href="../2026-02-08/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-08
                         </a>
                         
-                        <a href="archives/2026-02-07/index.html" 
+                        <a href="../2026-02-07/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-07
                         </a>
                         
-                        <a href="archives/2026-02-06/index.html" 
+                        <a href="../2026-02-06/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-06
                         </a>
                         
-                        <a href="archives/2026-02-05/index.html" 
+                        <a href="../2026-02-05/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-05
                         </a>
                         
-                        <a href="archives/2026-02-04/index.html" 
+                        <a href="../2026-02-04/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-04
                         </a>
                         
-                        <a href="archives/2026-02-03/index.html" 
+                        <a href="../2026-02-03/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-03
                         </a>
                         
-                        <a href="archives/2026-02-02/index.html" 
+                        <a href="../2026-02-02/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-02
                         </a>
                         
-                        <a href="archives/2026-02-01/index.html" 
+                        <a href="../2026-02-01/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-02-01
                         </a>
                         
-                        <a href="archives/2026-01-31/index.html" 
+                        <a href="../2026-01-31/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-31
                         </a>
                         
-                        <a href="archives/2026-01-30/index.html" 
+                        <a href="../2026-01-30/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-30
                         </a>
                         
-                        <a href="archives/2026-01-29/index.html" 
+                        <a href="../2026-01-29/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-29
                         </a>
                         
-                        <a href="archives/2026-01-28/index.html" 
+                        <a href="../2026-01-28/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-28
                         </a>
                         
-                        <a href="archives/2026-01-27/index.html" 
+                        <a href="../2026-01-27/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-27
                         </a>
                         
-                        <a href="archives/2026-01-26/index.html" 
+                        <a href="../2026-01-26/index.html" 
                            class="list-group-item list-group-item-action">
                             2026-01-26
                         </a>
